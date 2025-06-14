@@ -131,12 +131,11 @@
       localStorage.setItem('joinedDate', today);
       document.getElementById('joined').value = today;
     }
-
+<button onclick="saveProfile()">Save Profile</button>
     // Badge logic
     const hasFirstPost = localStorage.getItem("firstPost") === "true";
     const newsRead = parseInt(localStorage.getItem("newsReadCount")) || 0;
     const isFounder = localStorage.getItem("isFounder") === "true";
-<button onclick="saveProfile()">Save Profile</button>
     const badgeHTML = [
       `<span class="badge unlocked" data-tooltip="Created your profile">🎖 Astronaut</span>`,
       `<span class="badge ${hasFirstPost ? 'unlocked' : ''}" data-tooltip="Published your first blog post">📝 First Post</span>`,
@@ -154,7 +153,15 @@
   }
 
   loadProfile();
-  
+  function saveProfile() {
+  const name = document.getElementById('name').value;
+  const bio = document.getElementById('bio').value;
+
+  localStorage.setItem('userName', name);
+  localStorage.setItem('userBio', bio);
+
+  alert('Profile saved!');
+    }
   </script>
 </body>
 </html>
