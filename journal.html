@@ -1,1 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Journal | Sputnik Cosmotics</title>
+  <style>
+    body {
+      background: #0d1117;
+      color: #c9d1d9;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+    }
 
+    nav {
+      background: #161b22;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: white;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 1rem;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 1rem;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+
+    .news-card {
+      background: #161b22;
+      padding: 1rem;
+      border-radius: 10px;
+      border: 1px solid #30363d;
+      transition: 0.2s;
+    }
+
+    .news-card:hover {
+      border-color: #58a6ff;
+    }
+
+    .news-card h3 {
+      margin-top: 0;
+    }
+
+    .news-card a {
+      color: #58a6ff;
+      text-decoration: none;
+    }
+
+    .news-card small {
+      color: #8b949e;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div>🚀 Sputnik Cosmotics</div>
+    <div>
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="profile.html">Profile</a>
+      <a href="blog.html">Blog</a>
+      <a href="journal.html">Journal</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h1>📰 Astronomy News</h1>
+    <div class="news-grid" id="newsContainer">
+      <!-- News cards will be injected here -->
+    </div>
+  </div>
+
+  <script>
+    async function fetchNews() {
+      try {
+        const res = await fetch("https://api.spaceflightnewsapi.net/v4/articles?limit=8");
+        const data = await res.json();
+        const articles = data.results;
+
+        const container = document.getElementById('newsContainer');
+        let viewedArticles = JSON.parse(localStorage.getItem('viewedArticles') || '[]');
+
+        articles.forEach((article, index) => {
+          const card = document.createElement('div');
+          card.className = 'news-card';
+
+          card.innerHTML = `
+            <h3>${article.title}</h3>
+            <p>${article.summary || "No summary available."}</p>
+            <p><small>🗓 ${new Date(article.published_at).toDateString()}</small></p>
+            <a href="${article.url}" target="_blank" onclick="trackRead(${index})">Read More →</a>
+          `;
+
+          container.appendChild(card);
+        });
+      } catch (error) {
+        console.error("Failed to fetch news:", error);
+        document.getElementById('newsContainer').innerHTML = `<p>Could not load articles. Please try again later.</p>`;
+      }
+    }
+
+    function trackRead(index) {
+      let viewed = JSON.parse(localStorage.getItem('viewedArticles') || '[]');
+
+      if (!viewed.includes(index)) {
+        viewed.push(index);
+        localStorage.setItem('viewedArticles', JSON.stringify(viewed));
+        localStorage.setItem('newsReadCount', viewed.length);
+
+        if (viewed.length === 10) {
+          alert("📚 Badge Unlocked: Journal Reader!");
+        }
+      }
+    }
+
+    fetchNews();
+  </script>
+</body>
+</html>
