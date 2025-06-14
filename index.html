@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sputnik Cosmetics Club</title>
+  <title>Sputnik Cosmotics Club</title>
   <style>
     body {
       margin: 0;
@@ -113,7 +113,58 @@
       📧 Email: info.sputnikcosmotics@gmail.com<br/>
       🛰️ Location: Dhaka , Bangladesh 
 
-  
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Planet Visibility - Sputnik Cosmotics</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 2em;
+      background: #0b1b2c;
+      color: #fff;
+    }
+    .astro-box {
+      background: #142c47;
+      padding: 1em;
+      border-radius: 10px;
+      margin-top: 1em;
+    }
+  </style>
+</head>
+<body>
+  <h1>Planet Visibility Today</h1>
+  <div id="astroData" class="astro-box">Loading...</div>
+
+  <script>
+    // Replace with your location coordinates
+    const latitude = 23.81;  // Dhaka, for example
+    const longitude = 90.41;
+
+    const apiUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=sunrise,sunset,moonrise,moonset,moon_phase&timezone=auto`;
+
+    fetch(apiUrl)
+      .then(response => response.json())
+      .then(data => {
+        const d = data.daily;
+        const output = `
+          <strong>Date:</strong> ${d.time[0]}<br>
+          🌅 <strong>Sunrise:</strong> ${d.sunrise[0]} <br>
+          🌇 <strong>Sunset:</strong> ${d.sunset[0]} <br>
+          🌙 <strong>Moonrise:</strong> ${d.moonrise[0]} <br>
+          🌘 <strong>Moonset:</strong> ${d.moonset[0]} <br>
+          🌔 <strong>Moon Phase:</strong> ${d.moon_phase[0]}
+        `;
+        document.getElementById('astroData').innerHTML = output;
+      })
+      .catch(err => {
+        document.getElementById('astroData').innerHTML = "Failed to load data.";
+        console.error(err);
+      });
+  </script>
+</body>
+</html>
 
 
 
