@@ -1,192 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Sputnik Cosmotics - Blog</title>
-<style>
-body {
-  background-color: #121212;
-  color: #e0e0e0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  max-width: 800px;
-  margin: 40px auto;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
-}
-
-input[type="text"],
-textarea {
-  background-color: #222;
-  color: #eee;
-  border: 1px solid #555;
-  border-radius: 5px;
-}
-
-button {
-  background-color: #0a84ff;
-  color: white;
-  border-radius: 5px;
-  border: none;
-  padding: 10px 16px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-button:hover {
-  background-color: #005fcc;
-}
-
-.post {
-  background-color: #1e1e1e;
-  border: 1px solid #333;
-  padding: 15px;
-  margin-bottom: 20px;
-  border-radius: 8px;
-}
-
-.post h3,
-.post small {
-  color: #cfcfcf;
-}
-
-.post-buttons button {
-  background-color: #444;
-}
-
-.post-buttons button:hover {
-  background-color: #222;
-}
-
-.post-content img {
-  max-width: 100%;
-  height: auto;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  border-radius: 6px;
-  box-shadow: 0 0 10px rgba(10, 132, 255, 0.5);
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sputnik Cosmotics Blog</title>
+  <style>
+    body {
+      background-color: #0e0e1a;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #1c1c2e;
+      padding: 1rem;
+      text-align: center;
+    }
+    h1 {
+      margin: 0;
+      font-size: 2rem;
+    }
+    .blog-container {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 1rem;
+    }
+    .post {
+      background-color: #1c1c2e;
+      border: 1px solid #333;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+      padding: 1.5rem;
+    }
+    .post h2 {
+      margin-top: 0;
+      font-size: 1.5rem;
+      color: #00ffcc;
+    }
+    .post .meta {
+      font-size: 0.9rem;
+      color: #aaa;
+      margin-bottom: 1rem;
+    }
+  </style>
 </head>
 <body>
+  <header>
+    <h1>Sputnik Cosmotics Blog</h1>
+  </header>
+  <div class="blog-container" id="blog-posts">
+    <p>Loading blog posts...</p>
+  </div>
 
-<h1>Sputnik Cosmotics Blog</h1>
+  <script>
+    async function loadPosts() {
+      const response = await fetch('blog-posts.json');
+      const posts = await response.json();
+      const container = document.getElementById('blog-posts');
+      container.innerHTML = '';
 
-<form id="blog-form">
-  <label for="title">Post Title:</label><br />
-  <input type="text" id="title" name="title" placeholder="Enter post title" required /><br />
-
-  <label for="author">Author Name:</label><br />
-  <input type="text" id="author" name="author" placeholder="Your name" required /><br />
-
-  <label for="content">Post Content (HTML allowed, e.g. &lt;img src=&quot;URL&quot;&gt;):</label><br />
-  <textarea id="content" name="content" placeholder="Write your post here. Use &lt;img src=&quot;IMAGE_URL&quot; alt=&quot;desc&quot;&gt; to add images." required></textarea><br />
-
-  <button type="submit">Add Post</button>
-</form>
-
-<div id="posts-container"></div>
-
-<script>
-  const form = document.getElementById('blog-form');
-  const postsContainer = document.getElementById('posts-container');
-
-  // Load posts from localStorage or start empty
-  let posts = JSON.parse(localStorage.getItem('sputnikBlogPosts')) || [];
-
-  function savePosts() {
-    localStorage.setItem('sputnikBlogPosts', JSON.stringify(posts));
-  }
-
-  function renderPosts() {
-    postsContainer.innerHTML = '';
-
-    posts.forEach((post, index) => {
-      const postDiv = document.createElement('div');
-      postDiv.className = 'post';
-
-      postDiv.innerHTML = `
-        <h3>${escapeHtml(post.title)}</h3>
-        <small>By ${escapeHtml(post.author)} on ${new Date(post.date).toLocaleDateString()}</small>
-        <p class="post-content"></p>
-        <div class="post-buttons">
-          <button class="edit-btn">Edit</button>
-          <button class="delete-btn">Delete</button>
-        </div>
-      `;
-
-      // Set content as HTML to allow <img> and formatting tags
-      const contentP = postDiv.querySelector('.post-content');
-      contentP.innerHTML = post.content;
-
-      // Edit button handler
-      postDiv.querySelector('.edit-btn').addEventListener('click', () => {
-        // Fill form with existing post data
-        document.getElementById('title').value = post.title;
-        document.getElementById('author').value = post.author;
-        document.getElementById('content').value = post.content;
-
-        // Remove post from array and re-render to "replace" it after edit
-        posts.splice(index, 1);
-        savePosts();
-        renderPosts();
+      posts.forEach(post => {
+        const postEl = document.createElement('div');
+        postEl.className = 'post';
+        postEl.innerHTML = `
+          <h2>${post.title}</h2>
+          <div class="meta">By ${post.author} | ${post.date}</div>
+          <p>${post.content}</p>
+        `;
+        container.appendChild(postEl);
       });
-
-      // Delete button handler
-      postDiv.querySelector('.delete-btn').addEventListener('click', () => {
-        if (confirm('Delete this post?')) {
-          posts.splice(index, 1);
-          savePosts();
-          renderPosts();
-        }
-      });
-
-      postsContainer.appendChild(postDiv);
-    });
-  }
-
-  // Basic escapeHtml function for title/author to prevent injection
-  function escapeHtml(text) {
-    return text
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-  }
-
-  form.addEventListener('submit', e => {
-    e.preventDefault();
-
-    const title = form.title.value.trim();
-    const author = form.author.value.trim();
-    const content = form.content.value.trim();
-
-    if (!title || !author || !content) {
-      alert('Please fill in all fields.');
-      return;
     }
 
-    // Create new post object
-    const newPost = {
-      title,
-      author,
-      content, // raw HTML allowed
-      date: new Date().toISOString()
-    };
-
-    posts.unshift(newPost); // newest first
-    savePosts();
-    renderPosts();
-
-    // Reset form
-    form.reset();
-  });
-
-  // Initial render
-  renderPosts();
-</script>
-
+    loadPosts();
+  </script>
 </body>
 </html>
