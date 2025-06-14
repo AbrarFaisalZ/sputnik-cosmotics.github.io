@@ -1,305 +1,199 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Blog | Sputnik Cosmotics</title>
-  <style>
-    body {
-      background: #0d1117;
-      color: #c9d1d9;
-      font-family: 'Segoe UI', sans-serif;
-      margin: 0; padding: 0;
-    }
-    nav {
-      background: #161b22;
-      padding: 1rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      color: white;
-    }
-    nav a {
-      color: white;
-      text-decoration: none;
-      margin-left: 1rem;
-    }
-    .container {
-      max-width: 900px;
-      margin: 2rem auto;
-      padding: 0 1rem 3rem;
-    }
-    h1 {
-      text-align: center;
-      margin-bottom: 1.5rem;
-    }
-    form {
-      background: #161b22;
-      padding: 1rem;
-      border-radius: 8px;
-      margin-bottom: 2rem;
-      border: 1px solid #30363d;
-    }
-    form input, form textarea {
-      width: 100%;
-      margin-bottom: 1rem;
-      padding: 8px;
-      background: #0d1117;
-      border: 1px solid #30363d;
-      border-radius: 4px;
-      color: #c9d1d9;
-      font-size: 1rem;
-    }
-    form button {
-      background: #238636;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 6px;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    form button:hover {
-      background: #2ea043;
-    }
-    .posts {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-    .post {
-      background: #161b22;
-      padding: 1rem;
-      border-radius: 8px;
-      border: 1px solid #30363d;
-      transition: border-color 0.2s;
-      position: relative;
-    }
-    .post:hover {
-      border-color: #58a6ff;
-    }
-    .post h3 {
-      margin-top: 0;
-    }
-    .post small {
-      color: #8b949e;
-      display: block;
-      margin-bottom: 0.5rem;
-    }
-    .post p {
-      margin: 0;
-      white-space: pre-wrap;
-    }
-    .post-buttons {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      display: flex;
-      gap: 0.5rem;
-    }
-    .post-buttons button {
-      background: #30363d;
-      border: none;
-      color: #c9d1d9;
-      padding: 4px 8px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 0.85rem;
-      transition: background 0.2s;
-    }
-    .post-buttons button:hover {
-      background: #58a6ff;
-      color: white;
-    }
-    .edit-input, .edit-textarea {
-      width: 100%;
-      margin-bottom: 1rem;
-      padding: 8px;
-      background: #0d1117;
-      border: 1px solid #58a6ff;
-      border-radius: 4px;
-      color: #c9d1d9;
-      font-size: 1rem;
-      box-sizing: border-box;
-    }
-    .edit-textarea {
-      resize: vertical;
-      min-height: 80px;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sputnik Cosmotics - Blog</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+  }
+  h1 {
+    text-align: center;
+  }
+  form {
+    margin-bottom: 30px;
+    border: 1px solid #ccc;
+    padding: 15px;
+    border-radius: 8px;
+  }
+  input[type="text"], textarea {
+    width: 100%;
+    padding: 8px;
+    margin-top: 6px;
+    margin-bottom: 12px;
+    border: 1px solid #999;
+    border-radius: 4px;
+    box-sizing: border-box;
+    resize: vertical;
+  }
+  textarea {
+    min-height: 100px;
+  }
+  button {
+    background-color: #0077cc;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  button:hover {
+    background-color: #005fa3;
+  }
+  .post {
+    border: 1px solid #aaa;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+  }
+  .post h3 {
+    margin-top: 0;
+  }
+  .post small {
+    color: #555;
+  }
+  .post-buttons {
+    margin-top: 10px;
+  }
+  .post-buttons button {
+    margin-right: 10px;
+    background-color: #555;
+  }
+  .post-buttons button:hover {
+    background-color: #333;
+  }
+  /* Scrollable content inside posts for big images */
+  .post-content img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+</style>
 </head>
 <body>
-  <nav>
-    <div>🚀 Sputnik Cosmotics</div>
-    <div>
-      <a href="index.html">Home</a>
-      <a href="about.html">About</a>
-      <a href="profile.html">Profile</a>
-      <a href="blog.html">Blog</a>
-      <a href="journal.html">Journal</a>
-    </div>
-  </nav>
 
-  <div class="container">
-    <h1>📝 Sputnik Blog</h1>
+<h1>Sputnik Cosmotics Blog</h1>
 
-    <form id="postForm">
-      <input type="text" id="postTitle" placeholder="Post Title" required />
-      <input type="text" id="postAuthor" placeholder="Your Name" required />
-      <textarea id="postContent" rows="5" placeholder="Write your post here..." required></textarea>
-      <button type="submit">Publish Post</button>
-    </form>
+<form id="blog-form">
+  <label for="title">Post Title:</label><br />
+  <input type="text" id="title" name="title" placeholder="Enter post title" required /><br />
 
-    <div class="posts" id="postsContainer">
-      <!-- Blog posts will appear here -->
-    </div>
-  </div>
+  <label for="author">Author Name:</label><br />
+  <input type="text" id="author" name="author" placeholder="Your name" required /><br />
 
-  <script>
-    const form = document.getElementById('postForm');
-    const postsContainer = document.getElementById('postsContainer');
+  <label for="content">Post Content (HTML allowed, e.g. &lt;img src=&quot;URL&quot;&gt;):</label><br />
+  <textarea id="content" name="content" placeholder="Write your post here. Use &lt;img src=&quot;IMAGE_URL&quot; alt=&quot;desc&quot;&gt; to add images." required></textarea><br />
 
-    // Load posts from localStorage or start empty
-    let posts = JSON.parse(localStorage.getItem('blogPosts') || '[]');
+  <button type="submit">Add Post</button>
+</form>
 
-    // Try to get logged-in user name from profile page localStorage (example)
-    // Adjust this based on how you store your logged-in user profile data
-    // For demo: assume profile stores username in localStorage under 'profileName'
-    const loggedInUser = localStorage.getItem('profileName') || null;
+<div id="posts-container"></div>
 
-    function escapeHtml(text) {
-      const div = document.createElement('div');
-      div.textContent = text;
-      return div.innerHTML;
-    }
+<script>
+  const form = document.getElementById('blog-form');
+  const postsContainer = document.getElementById('posts-container');
 
-    function renderPosts() {
-      postsContainer.innerHTML = '';
-      if (posts.length === 0) {
-        postsContainer.innerHTML = '<p>No posts yet. Be the first to publish!</p>';
-        return;
-      }
+  // Load posts from localStorage or start empty
+  let posts = JSON.parse(localStorage.getItem('sputnikBlogPosts')) || [];
 
-      posts.slice().reverse().forEach((post, i) => {
-        const postDiv = document.createElement('div');
-        postDiv.className = 'post';
-        postDiv.dataset.index = posts.length - 1 - i; // keep original index
+  function savePosts() {
+    localStorage.setItem('sputnikBlogPosts', JSON.stringify(posts));
+  }
 
-        if (post.editing) {
-          // Show editable inputs
-          postDiv.innerHTML = `
-            <input class="edit-input" type="text" value="${escapeHtml(post.title)}" />
-            <input class="edit-input" type="text" value="${escapeHtml(post.author)}" />
-            <textarea class="edit-textarea">${escapeHtml(post.content)}</textarea>
-            <div class="post-buttons">
-              <button class="save-btn">Save</button>
-              <button class="cancel-btn">Cancel</button>
-            </div>
-          `;
-        } else {
-          // Show normal post view
-          postDiv.innerHTML = `
-            <h3>${escapeHtml(post.title)}</h3>
-            <small>By ${escapeHtml(post.author)} on ${new Date(post.date).toLocaleDateString()}</small>
-            <p>${escapeHtml(post.content)}</p>
-            <div class="post-buttons">
-              <button class="edit-btn">Edit</button>
-              <button class="delete-btn">Delete</button>
-            </div>
-          `;
+  function renderPosts() {
+    postsContainer.innerHTML = '';
 
-          // If loggedInUser is set and matches author, show edit/delete
-          // Or show them always — here we show always for simplicity
-        }
+    posts.forEach((post, index) => {
+      const postDiv = document.createElement('div');
+      postDiv.className = 'post';
 
-        postsContainer.appendChild(postDiv);
-      });
-    }
+      postDiv.innerHTML = `
+        <h3>${escapeHtml(post.title)}</h3>
+        <small>By ${escapeHtml(post.author)} on ${new Date(post.date).toLocaleDateString()}</small>
+        <p class="post-content"></p>
+        <div class="post-buttons">
+          <button class="edit-btn">Edit</button>
+          <button class="delete-btn">Delete</button>
+        </div>
+      `;
 
-    // Handlers for edit/save/delete/cancel
-    postsContainer.addEventListener('click', e => {
-      const postDiv = e.target.closest('.post');
-      if (!postDiv) return;
-      const index = Number(postDiv.dataset.index);
+      // Set content as HTML to allow <img> and formatting tags
+      const contentP = postDiv.querySelector('.post-content');
+      contentP.innerHTML = post.content;
 
-      if (e.target.classList.contains('edit-btn')) {
-        posts[index].editing = true;
-        renderPosts();
-      }
+      // Edit button handler
+      postDiv.querySelector('.edit-btn').addEventListener('click', () => {
+        // Fill form with existing post data
+        document.getElementById('title').value = post.title;
+        document.getElementById('author').value = post.author;
+        document.getElementById('content').value = post.content;
 
-      else if (e.target.classList.contains('cancel-btn')) {
-        posts[index].editing = false;
-        renderPosts();
-      }
-
-      else if (e.target.classList.contains('save-btn')) {
-        const inputs = postDiv.querySelectorAll('input.edit-input, textarea.edit-textarea');
-        const [titleInput, authorInput] = inputs;
-        const contentInput = postDiv.querySelector('textarea.edit-textarea');
-
-        const newTitle = titleInput.value.trim();
-        const newAuthor = authorInput.value.trim();
-        const newContent = contentInput.value.trim();
-
-        if (!newTitle || !newAuthor || !newContent) {
-          alert('Please fill all fields!');
-          return;
-        }
-
-        posts[index].title = newTitle;
-        posts[index].author = newAuthor;
-        posts[index].content = newContent;
-        posts[index].editing = false;
-        posts[index].date = new Date().toISOString(); // update date to last edited
-
+        // Remove post from array and re-render to "replace" it after edit
+        posts.splice(index, 1);
         savePosts();
         renderPosts();
-      }
+      });
 
-      else if (e.target.classList.contains('delete-btn')) {
+      // Delete button handler
+      postDiv.querySelector('.delete-btn').addEventListener('click', () => {
         if (confirm('Delete this post?')) {
           posts.splice(index, 1);
           savePosts();
           renderPosts();
         }
-      }
-    });
+      });
 
-    function savePosts() {
-      localStorage.setItem('blogPosts', JSON.stringify(posts));
+      postsContainer.appendChild(postDiv);
+    });
+  }
+
+  // Basic escapeHtml function for title/author to prevent injection
+  function escapeHtml(text) {
+    return text
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+
+    const title = form.title.value.trim();
+    const author = form.author.value.trim();
+    const content = form.content.value.trim();
+
+    if (!title || !author || !content) {
+      alert('Please fill in all fields.');
+      return;
     }
 
-    form.addEventListener('submit', e => {
-      e.preventDefault();
+    // Create new post object
+    const newPost = {
+      title,
+      author,
+      content, // raw HTML allowed
+      date: new Date().toISOString()
+    };
 
-      let authorName = form.postAuthor.value.trim();
-
-      // Override author if logged in user found (optional)
-      if (loggedInUser) {
-        authorName = loggedInUser;
-      }
-
-      const newPost = {
-        title: form.postTitle.value.trim(),
-        author: authorName,
-        content: form.postContent.value.trim(),
-        date: new Date().toISOString(),
-        editing: false
-      };
-
-      if (!newPost.title || !newPost.author || !newPost.content) {
-        alert('Please fill in all fields!');
-        return;
-      }
-
-      posts.push(newPost);
-      savePosts();
-      form.reset();
-      renderPosts();
-      alert('Post published successfully!');
-    });
-
+    posts.unshift(newPost); // newest first
+    savePosts();
     renderPosts();
-  </script>
+
+    // Reset form
+    form.reset();
+  });
+
+  // Initial render
+  renderPosts();
+</script>
+
 </body>
-        </html>
+</html>
