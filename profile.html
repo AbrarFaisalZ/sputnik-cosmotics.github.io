@@ -192,6 +192,19 @@
     }
 
     function saveProfile() {
+      function uploadPfp() {
+  const file = document.getElementById('pfpUpload').files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onloadend = function () {
+    const base64 = reader.result;
+    localStorage.setItem('userPic', base64);
+    document.getElementById('pfp').src = base64;
+    alert('Profile picture updated!');
+  };
+  reader.readAsDataURL(file);
+        }
       const name = document.getElementById('name').value;
       const bio = document.getElementById('bio').value;
 
