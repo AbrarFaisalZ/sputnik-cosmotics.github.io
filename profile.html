@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Your Profile - Sputnik Cosmotics</title>
+  <style>
+    .badge {
+  padding: 6px 12px;
+  border-radius: 8px;
+  margin: 5px;
+  display: inline-block;
+  background: #333;
+  border: 1px solid #555;
+  opacity: 0.5;
+  transition: all 0.3s ease;
+  cursor: default;
+  position: relative;
+  font-size: 14px;
+}
+.badge.unlocked {
+  background: #06f;
+  border-color: #0af;
+  opacity: 1;
+}
+.badge:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  background: #000;
+  padding: 4px 8px;
+  border-radius: 5px;
+  top: -35px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: 12px;
+  color: #fff;
+  z-index: 2;
+}
+  </style>
+</head>
+<body>
+  <div class="profile-card">
+    <h2>Your Profile</h2>
+    <img src="default-avatar.png" alt="Profile Picture" id="pfp" class="profile-pic"><br>
+    <input type="file" id="uploadPic"><br><br>
+
+    <label>Name:</label>
+    <input type="text" id="name"><br>
+
+    <label>Bio:</label>
+    <textarea id="bio"></textarea><br>
+
+    <label>Joined:</label>
+    <input type="text" id="joined" disabled><br>
+
+    <h3>Achievements</h3>
+    <div id="badges"></div>
+
+    <h3>Contributions</h3>
+    <ul id="contributions">
+      <li><a href="#">How to spot Saturn tonight</a></li>
+      <li><a href="#">My first astrophotography attempt</a></li>
+    </ul>
+
+    <button onclick="saveProfile()">Save Profile</button>
+  </div>
+
+  <script>
+    const defaultPic = "default-avatar.png";
+
+    function saveProfile() {
+      const name = document.getElementById('name').value;
+      const bio = document.getElementById('bio').value;
+      const pfp = document.getElementById('pfp').src;
+      localStorage.setItem('userName', name);
+      localStorage.setItem('userBio', bio);
+      localStorage.setItem('userPic', pfp);
+    }
+
+    function loadProfile() {
+      function loadProfile() {
+  document.getElementById('name').value = localStorage.getItem('userName') || '';
+  document.getElementById('bio').value = localStorage.getItem('userBio') || '';
+  document.getElementById('pfp').src = localStorage.getItem('userPic') || defaultPic;
+
+  const joined = localStorage.getItem('joinedDate');
+  if (joined) {
+    document.getElementById('joined').value = joined;
+  } else {
+    const today = new Date().toLocaleDateString();
+    localStorage.setItem('joinedDate', today);
+    document.getElementById('joined').value = today;
+  }
+
+  // Unlock badges based on localStorage flags
+  const unlocked = {
+    astronaut: true,
+    firstPost: localStorage.getItem("firstPost") === "true",
+    nightWatcher: localStorage.getItem("nightVisits") >= 3,
+    photographer: localStorage.getItem("photoUploaded") === "true",
+    forumFan: localStorage.getItem("forumReplies") >= 10,
+    planetHunter: localStorage.getItem("planetVisits") >= 5,
+    journalReader: localStorage.getItem("journalReads") >= 10,
+    bigBrain: localStorage.getItem("quizDone") === "true",
+    founder: localStorage.getItem("isFounder") === "true",
+    alien: localStorage.getItem("easterEgg") === "true",
+  };
+
+  const badgeData = [
+    { key: "astronaut", emoji: "🎖", name: "Astronaut", tip: "Created your profile" },
+    { key: "firstPost", emoji: "📝", name: "First Post", tip: "Published your first blog/forum post" },
+    { key: "nightWatcher", emoji: "🔭", name: "Night Watcher", tip: "Visited site 3+ times at night" },
+    { key: "photographer", emoji: "📸", name: "Astrophotographer", tip: "Uploaded a gallery photo" },
+    { key: "forumFan", emoji: "💬", name: "Forum Fanatic", tip: "10+ forum replies" },
+    { key: "planetHunter", emoji: "🪐", name: "Planet Hunter", tip: "Visited Planet page 5+ times" },
+    { key: "journalReader", emoji: "📚", name: "Journal Reader", tip: "Read 10+ journal articles" },
+    { key: "bigBrain", emoji: "🧠", name: "Big Brain", tip: "Completed a quiz" },
+    { key: "founder", emoji: "🎉", name: "Founder’s Circle", tip: "Original founding member" },
+    { key: "alien", emoji: "👽", name: "Alien Spotter", tip: "Discovered an easter egg" },
+  ];
+
+  let html = '';
+  badgeData.forEach(b => {
+    const unlockedClass = unlocked[b.key] ? "unlocked" : "";
+    html += `<span class="badge ${unlockedClass}" data-tooltip="${b.tip}">${b.emoji} ${b.name}</span>`;
+  });
+  document.getElementById('badges').innerHTML = html;
+     }
+
+      const joined = localStorage.getItem('joinedDate');
+      if (joined) {
+        document.getElementById('joined').value = joined;
+      } else {
+        const today = new Date().toLocaleDateString();
+        localStorage.setItem('joinedDate', today);
+        document.getElementById('joined').value = today;
+      }
+
+      // Add static badges
+      document.getElementById('badges').innerHTML = `
+        <span class="badge">🎖 Astronaut</span>
+        <span class="badge">📝 First Post</span>
+      `;
+    }
+
+    // Handle PFP upload
+    document.getElementById('uploadPic').addEventListener('change', function () {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        document.getElementById('pfp').src = e.target.result;
+      };
+      reader.readAsDataURL(this.files[0]);
+    });
+
+    loadProfile();
+  </script>
+</body>
+</html>
