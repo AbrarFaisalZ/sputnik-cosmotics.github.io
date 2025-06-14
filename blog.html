@@ -1,1 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Blog | Sputnik Cosmotics</title>
+  <style>
+    body {
+      background: #0d1117;
+      color: #c9d1d9;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0; padding: 0;
+    }
+    nav {
+      background: #161b22;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: white;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 1rem;
+    }
+    .container {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 0 1rem 3rem;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    form {
+      background: #161b22;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+      border: 1px solid #30363d;
+    }
+    form input, form textarea {
+      width: 100%;
+      margin-bottom: 1rem;
+      padding: 8px;
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 4px;
+      color: #c9d1d9;
+      font-size: 1rem;
+    }
+    form button {
+      background: #238636;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    form button:hover {
+      background: #2ea043;
+    }
+    .posts {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .post {
+      background: #161b22;
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid #30363d;
+      transition: border-color 0.2s;
+      position: relative;
+    }
+    .post:hover {
+      border-color: #58a6ff;
+    }
+    .post h3 {
+      margin-top: 0;
+    }
+    .post small {
+      color: #8b949e;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    .post p {
+      margin: 0;
+      white-space: pre-wrap;
+    }
+    .post-buttons {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      display: flex;
+      gap: 0.5rem;
+    }
+    .post-buttons button {
+      background: #30363d;
+      border: none;
+      color: #c9d1d9;
+      padding: 4px 8px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: background 0.2s;
+    }
+    .post-buttons button:hover {
+      background: #58a6ff;
+      color: white;
+    }
+    .edit-input, .edit-textarea {
+      width: 100%;
+      margin-bottom: 1rem;
+      padding: 8px;
+      background: #0d1117;
+      border: 1px solid #58a6ff;
+      border-radius: 4px;
+      color: #c9d1d9;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+    .edit-textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div>🚀 Sputnik Cosmotics</div>
+    <div>
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="profile.html">Profile</a>
+      <a href="blog.html">Blog</a>
+      <a href="journal.html">Journal</a>
+    </div>
+  </nav>
 
+  <div class="container">
+    <h1>📝 Sputnik Blog</h1>
+
+    <form id="postForm">
+      <input type="text" id="postTitle" placeholder="Post Title" required />
+      <input type="text" id="postAuthor" placeholder="Your Name" required />
+      <textarea id="postContent" rows="5" placeholder="Write your post here..." required></textarea>
+      <button type="submit">Publish Post</button>
+    </form>
+
+    <div class="posts" id="postsContainer">
+      <!-- Blog posts will appear here -->
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('postForm');
+    const postsContainer = document.getElementById('postsContainer');
+
+    // Load posts from localStorage or start empty
+    let posts = JSON.parse(localStorage.getItem('blogPosts') || '[]');
+
+    // Try to get logged-in user name from profile page localStorage (example)
+    // Adjust this based on how you store your logged-in user profile data
+    // For demo: assume profile stores username in localStorage under 'profileName'
+    const loggedInUser = localStorage.getItem('profileName') || null;
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function renderPosts() {
+      postsContainer.innerHTML = '';
+      if (posts.length === 0) {
+        postsContainer.innerHTML = '<p>No posts yet. Be the first to publish!</p>';
+        return;
+      }
+
+      posts.slice().reverse().forEach((post, i) => {
+        const postDiv = document.createElement('div');
+        postDiv.className = 'post';
+        postDiv.dataset.index = posts.length - 1 - i; // keep original index
+
+        if (post.editing) {
+          // Show editable inputs
+          postDiv.innerHTML = `
+            <input class="edit-input" type="text" value="${escapeHtml(post.title)}" />
+            <input class="edit-input" type="text" value="${escapeHtml(post.author)}" />
+            <textarea class="edit-textarea">${escapeHtml(post.content)}</textarea>
+            <div class="post-buttons">
+              <button class="save-btn">Save</button>
+              <button class="cancel-btn">Cancel</button>
+            </div>
+          `;
+        } else {
+          // Show normal post view
+          postDiv.innerHTML = `
+            <h3>${escapeHtml(post.title)}</h3>
+            <small>By ${escapeHtml(post.author)} on ${new Date(post.date).toLocaleDateString()}</small>
+            <p>${escapeHtml(post.content)}</p>
+            <div class="post-buttons">
+              <button class="edit-btn">Edit</button>
+              <button class="delete-btn">Delete</button>
+            </div>
+          `;
+
+          // If loggedInUser is set and matches author, show edit/delete
+          // Or show them always — here we show always for simplicity
+        }
+
+        postsContainer.appendChild(postDiv);
+      });
+    }
+
+    // Handlers for edit/save/delete/cancel
+    postsContainer.addEventListener('click', e => {
+      const postDiv = e.target.closest('.post');
+      if (!postDiv) return;
+      const index = Number(postDiv.dataset.index);
+
+      if (e.target.classList.contains('edit-btn')) {
+        posts[index].editing = true;
+        renderPosts();
+      }
+
+      else if (e.target.classList.contains('cancel-btn')) {
+        posts[index].editing = false;
+        renderPosts();
+      }
+
+      else if (e.target.classList.contains('save-btn')) {
+        const inputs = postDiv.querySelectorAll('input.edit-input, textarea.edit-textarea');
+        const [titleInput, authorInput] = inputs;
+        const contentInput = postDiv.querySelector('textarea.edit-textarea');
+
+        const newTitle = titleInput.value.trim();
+        const newAuthor = authorInput.value.trim();
+        const newContent = contentInput.value.trim();
+
+        if (!newTitle || !newAuthor || !newContent) {
+          alert('Please fill all fields!');
+          return;
+        }
+
+        posts[index].title = newTitle;
+        posts[index].author = newAuthor;
+        posts[index].content = newContent;
+        posts[index].editing = false;
+        posts[index].date = new Date().toISOString(); // update date to last edited
+
+        savePosts();
+        renderPosts();
+      }
+
+      else if (e.target.classList.contains('delete-btn')) {
+        if (confirm('Delete this post?')) {
+          posts.splice(index, 1);
+          savePosts();
+          renderPosts();
+        }
+      }
+    });
+
+    function savePosts() {
+      localStorage.setItem('blogPosts', JSON.stringify(posts));
+    }
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+
+      let authorName = form.postAuthor.value.trim();
+
+      // Override author if logged in user found (optional)
+      if (loggedInUser) {
+        authorName = loggedInUser;
+      }
+
+      const newPost = {
+        title: form.postTitle.value.trim(),
+        author: authorName,
+        content: form.postContent.value.trim(),
+        date: new Date().toISOString(),
+        editing: false
+      };
+
+      if (!newPost.title || !newPost.author || !newPost.content) {
+        alert('Please fill in all fields!');
+        return;
+      }
+
+      posts.push(newPost);
+      savePosts();
+      form.reset();
+      renderPosts();
+      alert('Post published successfully!');
+    });
+
+    renderPosts();
+  </script>
+</body>
+        </html>
