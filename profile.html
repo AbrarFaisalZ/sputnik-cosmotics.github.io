@@ -1,4 +1,16 @@
 <!DOCTYPE html>
+<nav style="background:#161b22; padding: 1rem; display:flex; justify-content: space-between; align-items: center; color:white;">
+  <div style="font-weight:bold; font-size:1.2rem;">
+    🚀 Sputnik Cosmotics
+  </div>
+  <div style="display: flex; gap: 1rem;">
+    <a href="index.html" style="color:white; text-decoration:none;">Home</a>
+    <a href="about.html" style="color:white; text-decoration:none;">About</a>
+    <a href="profile.html" style="color:white; text-decoration:none;">Profile</a>
+    <a href="blog.html" style="color:white; text-decoration:none;">Blog</a>
+    <a href="journal.html" style="color:white; text-decoration:none;">Journal</a>
+  </div>
+</nav>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -124,7 +136,7 @@
     const hasFirstPost = localStorage.getItem("firstPost") === "true";
     const newsRead = parseInt(localStorage.getItem("newsReadCount")) || 0;
     const isFounder = localStorage.getItem("isFounder") === "true";
-
+<button onclick="saveProfile()">Save Profile</button>
     const badgeHTML = [
       `<span class="badge unlocked" data-tooltip="Created your profile">🎖 Astronaut</span>`,
       `<span class="badge ${hasFirstPost ? 'unlocked' : ''}" data-tooltip="Published your first blog post">📝 First Post</span>`,
