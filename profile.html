@@ -131,7 +131,7 @@
       localStorage.setItem('joinedDate', today);
       document.getElementById('joined').value = today;
     }
-<button onclick="saveProfile()">Save Profile</button>
+
     // Badge logic
     const hasFirstPost = localStorage.getItem("firstPost") === "true";
     const newsRead = parseInt(localStorage.getItem("newsReadCount")) || 0;
@@ -153,7 +153,8 @@
   }
 
   loadProfile();
-  function saveProfile() {
+<button onclick="saveProfile()">Save Profile</button>
+    function saveProfile() {
   const name = document.getElementById('name').value;
   const bio = document.getElementById('bio').value;
 
