@@ -1,29 +1,31 @@
 <!DOCTYPE html>
-<nav style="background:#161b22; padding: 1rem; display:flex; justify-content: space-between; align-items: center; color:white;">
-  <div style="font-weight:bold; font-size:1.2rem;">
-    🚀 Sputnik Cosmotics
-  </div>
-  <div style="display: flex; gap: 1rem;">
-    <a href="index.html" style="color:white; text-decoration:none;">Home</a>
-    <a href="about.html" style="color:white; text-decoration:none;">About</a>
-    <a href="profile.html" style="color:white; text-decoration:none;">Profile</a>
-    <a href="blog.html" style="color:white; text-decoration:none;">Blog</a>
-    <a href="journal.html" style="color:white; text-decoration:none;">Journal</a>
-  </div>
-</nav>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>User Profile | Sputnik Cosmotics</title>
   <style>
     body {
       margin: 0;
-      padding: 0;
       font-family: 'Segoe UI', sans-serif;
       background: #0d1117;
       color: #c9d1d9;
     }
+
+    nav {
+      background: #161b22;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: white;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 1rem;
+    }
+
     .container {
       max-width: 800px;
       margin: 40px auto;
@@ -32,6 +34,7 @@
       padding: 2rem;
       box-shadow: 0 0 15px rgba(0,0,0,0.6);
     }
+
     .profile-header {
       display: flex;
       align-items: center;
@@ -48,7 +51,8 @@
     .profile-info {
       flex: 1;
     }
-    .profile-info input, .profile-info textarea {
+    .profile-info input,
+    .profile-info textarea {
       width: 100%;
       padding: 0.5rem;
       margin-top: 6px;
@@ -58,12 +62,28 @@
       color: #c9d1d9;
       border-radius: 6px;
     }
+
+    button {
+      padding: 10px 20px;
+      margin-top: 10px;
+      background: #238636;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover {
+      background: #2ea043;
+    }
+
     .badge-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
       gap: 10px;
       margin-top: 2rem;
     }
+
     .badge {
       padding: 8px 10px;
       background: #2d333b;
@@ -75,12 +95,14 @@
       position: relative;
       font-size: 14px;
     }
+
     .badge.unlocked {
       background: #238636;
       border-color: #2ea043;
       color: white;
       opacity: 1;
     }
+
     .badge:hover::after {
       content: attr(data-tooltip);
       position: absolute;
@@ -98,16 +120,31 @@
   </style>
 </head>
 <body>
+  <nav>
+    <div>🚀 Sputnik Cosmotics</div>
+    <div>
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="profile.html">Profile</a>
+      <a href="blog.html">Blog</a>
+      <a href="journal.html">Journal</a>
+    </div>
+  </nav>
+
   <div class="container">
     <div class="profile-header">
       <img id="pfp" src="https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png" alt="User Picture" />
       <div class="profile-info">
         <label>Name:</label>
         <input id="name" type="text" placeholder="Your name" />
+
         <label>Bio:</label>
         <textarea id="bio" rows="3" placeholder="Short bio..."></textarea>
+
         <label>Joined:</label>
         <input id="joined" type="text" disabled />
+
+        <button onclick="saveProfile()">Save Profile</button>
       </div>
     </div>
 
@@ -116,53 +153,54 @@
   </div>
 
   <script>
-  const defaultPic = "https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png";
+    const defaultPic = "https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png";
 
-  function loadProfile() {
-    document.getElementById('name').value = localStorage.getItem('userName') || '';
-    document.getElementById('bio').value = localStorage.getItem('userBio') || '';
-    document.getElementById('pfp').src = localStorage.getItem('userPic') || defaultPic;
+    function loadProfile() {
+      document.getElementById('name').value = localStorage.getItem('userName') || '';
+      document.getElementById('bio').value = localStorage.getItem('userBio') || '';
+      document.getElementById('pfp').src = localStorage.getItem('userPic') || defaultPic;
 
-    const joined = localStorage.getItem('joinedDate');
-    if (joined) {
-      document.getElementById('joined').value = joined;
-    } else {
-      const today = new Date().toLocaleDateString();
-      localStorage.setItem('joinedDate', today);
-      document.getElementById('joined').value = today;
+      const joined = localStorage.getItem('joinedDate');
+      if (joined) {
+        document.getElementById('joined').value = joined;
+      } else {
+        const today = new Date().toLocaleDateString();
+        localStorage.setItem('joinedDate', today);
+        document.getElementById('joined').value = today;
+      }
+
+      // Badge logic
+      const hasFirstPost = localStorage.getItem("firstPost") === "true";
+      const newsRead = parseInt(localStorage.getItem("newsReadCount")) || 0;
+      const isFounder = localStorage.getItem("isFounder") === "true";
+
+      const badgeHTML = [
+        `<span class="badge unlocked" data-tooltip="Created your profile">🎖 Astronaut</span>`,
+        `<span class="badge ${hasFirstPost ? 'unlocked' : ''}" data-tooltip="Published your first blog post">📝 First Post</span>`,
+        `<span class="badge" data-tooltip="Visited 3 times at night">🔭 Night Watcher</span>`,
+        `<span class="badge" data-tooltip="Uploaded a photo">📸 Astrophotographer</span>`,
+        `<span class="badge" data-tooltip="Replied to 10 posts">💬 Forum Fanatic</span>`,
+        `<span class="badge" data-tooltip="Visited planet page 5 times">🪐 Planet Hunter</span>`,
+        `<span class="badge ${newsRead >= 10 ? 'unlocked' : ''}" data-tooltip="Read 10 news articles">📚 Journal Reader</span>`,
+        `<span class="badge" data-tooltip="Completed a quiz">🧠 Big Brain</span>`,
+        `<span class="badge ${isFounder ? 'unlocked' : ''}" data-tooltip="Founder of Sputnik Cosmotics">🎉 Founder’s Circle</span>`,
+        `<span class="badge" data-tooltip="You found the secret!">👽 Alien Spotter</span>`
+      ].join("");
+
+      document.getElementById("badges").innerHTML = badgeHTML;
     }
 
-    // Badge logic
-    const hasFirstPost = localStorage.getItem("firstPost") === "true";
-    const newsRead = parseInt(localStorage.getItem("newsReadCount")) || 0;
-    const isFounder = localStorage.getItem("isFounder") === "true";
-    const badgeHTML = [
-      `<span class="badge unlocked" data-tooltip="Created your profile">🎖 Astronaut</span>`,
-      `<span class="badge ${hasFirstPost ? 'unlocked' : ''}" data-tooltip="Published your first blog post">📝 First Post</span>`,
-      `<span class="badge" data-tooltip="Visited 3 times at night">🔭 Night Watcher</span>`,
-      `<span class="badge" data-tooltip="Uploaded a photo">📸 Astrophotographer</span>`,
-      `<span class="badge" data-tooltip="Replied to 10 posts">💬 Forum Fanatic</span>`,
-      `<span class="badge" data-tooltip="Visited planet page 5 times">🪐 Planet Hunter</span>`,
-      `<span class="badge ${newsRead >= 10 ? 'unlocked' : ''}" data-tooltip="Read 10 news articles">📚 Journal Reader</span>`,
-      `<span class="badge" data-tooltip="Completed a quiz">🧠 Big Brain</span>`,
-      `<span class="badge ${isFounder ? 'unlocked' : ''}" data-tooltip="Founder of Sputnik Cosmotics">🎉 Founder’s Circle</span>`,
-      `<span class="badge" data-tooltip="You found the secret!">👽 Alien Spotter</span>`
-    ].join("");
-
-    document.getElementById("badges").innerHTML = badgeHTML;
-  }
-
-  loadProfile();
-<button onclick="saveProfile()">Save Profile</button>
     function saveProfile() {
-  const name = document.getElementById('name').value;
-  const bio = document.getElementById('bio').value;
+      const name = document.getElementById('name').value;
+      const bio = document.getElementById('bio').value;
 
-  localStorage.setItem('userName', name);
-  localStorage.setItem('userBio', bio);
+      localStorage.setItem('userName', name);
+      localStorage.setItem('userBio', bio);
 
-  alert('Profile saved!');
+      alert('Profile saved!');
     }
+
+    loadProfile();
   </script>
 </body>
 </html>
