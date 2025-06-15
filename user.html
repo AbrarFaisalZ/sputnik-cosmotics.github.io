@@ -1,94 +1,117 @@
 <!DOCTYPE html><html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>User Profile</title>
   <style>
     body {
       margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #1d2671, #c33764);
       color: white;
+    }
+    nav {
+      background-color: #1a1a1a;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 1rem;
+    }
+    nav a:hover {
+      text-decoration: underline;
     }
     .container {
       max-width: 800px;
-      margin: 3rem auto;
-      background: rgba(255, 255, 255, 0.08);
+      margin: 2rem auto;
+      background: rgba(0, 0, 0, 0.3);
       padding: 2rem;
-      border-radius: 12px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
-    }
-    .header {
-      display: flex;
-      align-items: center;
-      gap: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
     }
     .profile-pic {
-      width: 100px;
-      height: 100px;
+      width: 120px;
+      height: 120px;
       border-radius: 50%;
       object-fit: cover;
-      border: 3px solid #4CAF50;
+      border: 3px solid #fff;
     }
-    .name {
-      font-size: 1.8rem;
-      font-weight: bold;
+    .achievements {
+      margin-top: 1.5rem;
     }
-    .role {
-      background: #4CAF50;
-      padding: 0.3rem 0.7rem;
-      border-radius: 20px;
-      font-size: 0.9rem;
-      display: inline-block;
-      margin-top: 0.5rem;
-    }
-    .bio {
-      margin-top: 1rem;
-      padding: 1rem;
-      background: rgba(0, 0, 0, 0.2);
-      border-radius: 10px;
-    }
-    .section {
-      margin-top: 2rem;
-    }
-    .section h3 {
+    .achievements h3 {
       margin-bottom: 0.5rem;
-      border-bottom: 2px solid #4CAF50;
-      padding-bottom: 0.3rem;
     }
     .badge {
       display: inline-block;
-      background: #ff9800;
-      color: white;
-      padding: 0.3rem 0.7rem;
+      background-color: rgba(255,255,255,0.2);
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
       margin: 0.3rem;
-      border-radius: 12px;
-      font-size: 0.85rem;
+    }
+    .posts {
+      margin-top: 2rem;
+    }
+    .edit-btn {
+      display: none;
+      margin-top: 1rem;
+      padding: 0.4rem 0.8rem;
+      background-color: #00bcd4;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .edit-btn:hover {
+      background-color: #008c9e;
+    }
+    .comment {
+      margin-top: 0.5rem;
+      padding-left: 1rem;
+      font-size: 0.9rem;
+      color: #ddd;
+    }
+    .comment-box {
+      margin-top: 0.5rem;
+    }
+    .comment-box textarea {
+      width: 100%;
+      height: 40px;
+    }
+    .like-btn {
+      cursor: pointer;
+      color: #ffc107;
+      margin-right: 0.5rem;
     }
   </style>
 </head>
-<body>
-  <div class="container">
-    <div class="header">
-      <img id="pfp" class="profile-pic" src="" alt="Profile Picture" />
-      <div>
-        <div class="name" id="username">Loading...</div>
-        <div class="role" id="role"></div>
-      </div>
+<body>  <nav>
+    <div><strong>🚀 Sputnik</strong></div>
+    <div>
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="blog.html">Blog</a>
+      <a href="profile.html">Edit Profile</a>
     </div>
-    <div class="bio" id="bio">Fetching bio...</div><div class="section">
-  <h3> 🎖 Achievements</h3>
-  <div id="achievements">
-    <span class="badge"> 🚀 Astronaut</span>
-    <span class="badge"> 🌟 Stellar Blogger</span>
-    <span class="badge"> 💬 Community Member</span>
-  </div>
+  </nav>  <div class="container">
+    <div style="text-align: center;">
+      <img id="pfp" class="profile-pic" src="" alt="Profile Picture">
+      <h2 id="username">Username</h2>
+      <p id="bio">User bio goes here...</p>
+      <p><strong>Role:</strong> <span id="role">Loading...</span></p>
+      <button id="edit-btn" class="edit-btn" onclick="window.location.href='profile.html'">Edit Profile</button>
+    </div><div class="achievements">
+  <h3>🏅 Achievements</h3>
+  <div id="badges"></div>
 </div>
 
-<div class="section">
-  <h3>📝 Posts</h3>
-  <p>Coming soon...</p>
+<div class="posts">
+  <h3>📝 Recent Posts</h3>
+  <ul id="post-list"></ul>
 </div>
 
   </div>  <script type="module">
@@ -96,8 +119,19 @@
     import {
       getFirestore,
       doc,
-      getDoc
+      getDoc,
+      collection,
+      query,
+      where,
+      getDocs,
+      updateDoc,
+      arrayUnion,
+      Timestamp
     } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+    import {
+      getAuth,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCiI1zHK3pJgyOO_6R8_VsanoXGySAGk9k",
@@ -110,34 +144,104 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    const auth = getAuth(app);
 
     const urlParams = new URLSearchParams(window.location.search);
     const uid = urlParams.get('uid');
+    const founderUID = "CImstFVO02deRULe8PSCiyO920Y2";
 
-    async function loadProfile() {
-      if (!uid) {
-        alert("No UID found in URL.");
-        return;
+    const usernameEl = document.getElementById("username");
+    const bioEl = document.getElementById("bio");
+    const roleEl = document.getElementById("role");
+    const pfp = document.getElementById("pfp");
+    const badges = document.getElementById("badges");
+    const postList = document.getElementById("post-list");
+    const editBtn = document.getElementById("edit-btn");
+
+    let currentUser = null;
+    onAuthStateChanged(auth, async (user) => {
+      currentUser = user;
+      if (user && uid === user.uid) {
+        editBtn.style.display = 'inline-block';
       }
+    });
+
+    async function loadUserProfile(uid) {
       const userRef = doc(db, "users", uid);
       const docSnap = await getDoc(userRef);
 
       if (docSnap.exists()) {
         const data = docSnap.data();
-        document.getElementById("username").textContent = data.name;
-        document.getElementById("role").textContent = data.role;
-        document.getElementById("bio").textContent = data.bio || "No bio available.";
-        if (data.role === "Founder") {
-          document.getElementById("achievements").innerHTML += '<span class="badge">🛡️ Founder</span>';
-        }
-      } else {
-        document.getElementById("username").textContent = "User not found";
-        document.getElementById("bio").textContent = "No data available.";
+        usernameEl.textContent = data.name || "Unknown User";
+        bioEl.textContent = data.bio || "";
+        roleEl.textContent = data.role || (uid === founderUID ? "Founder" : "Member");
+        pfp.src = data.photoURL || "https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png";
+
+        const createdTime = data.createdAt?.toDate();
+        const now = new Date();
+        const months = createdTime ? (now.getFullYear() - createdTime.getFullYear()) * 12 + (now.getMonth() - createdTime.getMonth()) : 0;
+
+        const role = uid === founderUID ? "Founder" : "Member";
+        if (role === "Founder") badges.innerHTML += `<span class="badge">🛡️ Founder</span>`;
+        badges.innerHTML += `<span class="badge">🚀 Astronaut</span>`;
+        if ((data.bio || '').length > 50) badges.innerHTML += `<span class="badge">🌟 Stellar Blogger</span>`;
+        if (months >= 1) badges.innerHTML += `<span class="badge">👽 Alien Onlooker</span>`;
+        badges.innerHTML += `<span class="badge">💬 Community Member</span>`;
       }
     }
 
-    document.getElementById("pfp").src = "https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png";
+    async function loadUserPosts(uid) {
+      const q = query(collection(db, "posts"), where("uid", "==", uid));
+      const querySnapshot = await getDocs(q);
+      if (querySnapshot.empty) {
+        postList.innerHTML = "<li>No posts yet.</li>";
+        return;
+      }
+      querySnapshot.forEach((doc) => {
+        const post = doc.data();
+        const li = document.createElement("li");
+        li.innerHTML = `
+          <h4>${post.title || "Untitled Post"}</h4>
+          <p>${post.content || "No content..."}</p>
+          <div>
+            <span class="like-btn" onclick="likePost('${doc.id}')">👍 ${post.likes || 0}</span>
+          </div>
+          <div class="comment-box">
+            <textarea id="comment-${doc.id}" placeholder="Write a comment..."></textarea><button onclick="commentOnPost('${doc.id}')">Comment</button>
+      </div>
+      <div id="comments-${doc.id}"></div>
+    `;
+    postList.appendChild(li);
+  });
+}
 
-    loadProfile();
-  </script></body>
+window.likePost = async function(postId) {
+  const postRef = doc(db, "posts", postId);
+  const postSnap = await getDoc(postRef);
+  const data = postSnap.data();
+  await updateDoc(postRef, {
+    likes: (data.likes || 0) + 1
+  });
+  location.reload();
+}
+
+window.commentOnPost = async function(postId) {
+  const commentText = document.getElementById(`comment-${postId}`).value;
+  if (!currentUser || !commentText.trim()) return;
+  const commentRef = doc(db, "posts", postId);
+  await updateDoc(commentRef, {
+    comments: arrayUnion({ text: commentText, user: currentUser.displayName, time: Timestamp.now() })
+  });
+  location.reload();
+}
+
+if (uid) {
+  loadUserProfile(uid);
+  loadUserPosts(uid);
+} else {
+  alert("No user ID found.");
+}
+
+  </script>
+</body>
 </html>
