@@ -1,0 +1,143 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Profile</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
+      color: white;
+    }
+    .container {
+      max-width: 800px;
+      margin: 3rem auto;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 2rem;
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+    .profile-pic {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #4CAF50;
+    }
+    .name {
+      font-size: 1.8rem;
+      font-weight: bold;
+    }
+    .role {
+      background: #4CAF50;
+      padding: 0.3rem 0.7rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      display: inline-block;
+      margin-top: 0.5rem;
+    }
+    .bio {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+    }
+    .section {
+      margin-top: 2rem;
+    }
+    .section h3 {
+      margin-bottom: 0.5rem;
+      border-bottom: 2px solid #4CAF50;
+      padding-bottom: 0.3rem;
+    }
+    .badge {
+      display: inline-block;
+      background: #ff9800;
+      color: white;
+      padding: 0.3rem 0.7rem;
+      margin: 0.3rem;
+      border-radius: 12px;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <img id="pfp" class="profile-pic" src="" alt="Profile Picture" />
+      <div>
+        <div class="name" id="username">Loading...</div>
+        <div class="role" id="role"></div>
+      </div>
+    </div>
+    <div class="bio" id="bio">Fetching bio...</div><div class="section">
+  <h3>🎖 Achievements</h3>
+  <div id="achievements">
+    <span class="badge">Astronaut</span>
+  </div>
+</div>
+
+<div class="section">
+  <h3>📝 Posts</h3>
+  <p>Coming soon...</p>
+</div>
+
+  </div>  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import {
+      getFirestore,
+      doc,
+      getDoc
+    } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCiI1zHK3pJgyOO_6R8_VsanoXGySAGk9k",
+      authDomain: "sputnik-cosmotics.firebaseapp.com",
+      projectId: "sputnik-cosmotics",
+      storageBucket: "sputnik-cosmotics.appspot.com",
+      messagingSenderId: "197760107068",
+      appId: "1:197760107068:web:27f8aaff43dd072645f939"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const uid = urlParams.get('uid');
+
+    async function loadProfile() {
+      if (!uid) {
+        alert("No UID found in URL.");
+        return;
+      }
+      const userRef = doc(db, "users", uid);
+      const docSnap = await getDoc(userRef);
+
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        document.getElementById("username").textContent = data.name;
+        document.getElementById("role").textContent = data.role;
+        document.getElementById("bio").textContent = data.bio || "No bio available.";
+        // Optionally add founder badge
+        if (data.role === "Founder") {
+          document.getElementById("achievements").innerHTML += '<span class="badge">Founder</span>';
+        }
+      } else {
+        document.getElementById("username").textContent = "User not found";
+        document.getElementById("bio").textContent = "No data available.";
+      }
+    }
+
+    // Static fallback pfp (public profile doesn't auto-fetch auth photo)
+    document.getElementById("pfp").src = "https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png";
+
+    loadProfile();
+  </script></body>
+</html>
