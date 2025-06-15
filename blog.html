@@ -1,188 +1,189 @@
 <!DOCTYPE html><html lang="en">
-<body>
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
-    import { renderNavbar } from "./navbar.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyCiI1zHK3pJgyOO_6R8_VsanoXGySAGk9k",
-      authDomain: "sputnik-cosmotics.firebaseapp.com",
-      projectId: "sputnik-cosmotics",
-      storageBucket: "sputnik-cosmotics.appspot.com",
-      messagingSenderId: "197760107068",
-      appId: "1:197760107068:web:27f8aaff43dd072645f939"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
-    renderNavbar(); // Renders the nav HTML
-
-    onAuthStateChanged(auth, (user) => {
-      const profileLink = document.getElementById("profile-link");
-      if (user && profileLink) {
-        profileLink.href = `user.html?uid=${user.uid}`;
-      }
-    });
-  </script>
-  <nav style="text-align:center; background:#0d0f1b; padding:1rem; border-bottom:1px solid #1f2a40;">
-  <a href="index.html" style="color:#00ffc8; margin:0 15px; text-decoration:none;">Home</a>
-  <a href="about.html" style="color:#00ffc8; margin:0 15px; text-decoration:none;">About</a>
-  <a href="blog.html" style="color:#00ffc8; margin:0 15px; text-decoration:none;">Blog</a>
-  <a href="profile.html" style="color:#00ffc8; margin:0 15px; text-decoration:none;">profile</a>
-  <a href="journal.html" style="color:#00ffc8; margin:0 15px; text-decoration:none;">Journal</a>
-</nav>
   <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sputnik Cosmotics Blog</title>
-  <style>
-    body {
-      background-color: #0d0f1b;
-      color: white;
-      font-family: 'Segoe UI', sans-serif;
-      margin: 0;
-      padding: 0;
-    }
-    header {
-      background-color: #111627;
-      padding: 1rem;
-      text-align: center;
-      border-bottom: 1px solid #1f2a40;
-    }
-    h1 {
-      margin: 0;
-      font-size: 2.5rem;
-      color: #00ffc8;
-    }
-    .submit-btn {
-      display: inline-block;
-      margin-top: 1rem;
-      padding: 0.6rem 1.2rem;
-      background-color: #00ffc8;
-      color: #0d0f1b;
-      text-decoration: none;
-      font-weight: bold;
-      border-radius: 8px;
-      transition: 0.2s ease;
-    }
-    .submit-btn:hover {
-      background-color: #00e6b3;
-    }
-    .container {
-      padding: 2rem;
-      max-width: 1000px;
-      margin: auto;
-    }
-    .search-bar {
-      width: 100%;
-      padding: 0.8rem;
-      border: none;
-      border-radius: 6px;
-      margin-bottom: 1.5rem;
-      font-size: 1rem;
-    }
-    .blog-post {
-      background-color: #1a1f34;
-      margin-bottom: 2rem;
-      padding: 1.5rem;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,255,255,0.1);
-    }
-    .blog-post h2 {
-      margin-top: 0;
-      color: #00ffc8;
-    }
-    .blog-post img {
-      max-width: 100%;
-      margin-top: 1rem;
-      border-radius: 8px;
-    }
-    .meta {
-      color: #aaa;
-      font-size: 0.9rem;
-      margin-bottom: 1rem;
-    }
-    .like-btn {
-      background-color: transparent;
-      border: none;
-      color: #00ffc8;
-      font-size: 1rem;
-      cursor: pointer;
-    }
-  </style>
-</head>
-<body>
-  <header>
-    <h1>Community Blog</h1>
-    <div class="top-bar">
-      <a href="https://docs.google.com/forms/d/e/1FAIpQLSfCUeOkuupr-WyyC2UgQu-cyqGgPXECj7Yolqnz4NGbRFxv0w/viewform?usp=header" class="submit-btn" target="_blank">+ Submit a Blog</a>
-    </div>
-  </header>  <div class="container">
-    <input type="text" id="searchInput" class="search-bar" placeholder="Search blog posts...">
-    <div id="blog-container">
-      <p>Loading blogs...</p>
-    </div>
-  </div>  <script>
-    let allBlogs = [];
-
-    async function loadBlogs() {
-      const container = document.getElementById('blog-container');
-      try {
-        const response = await fetch('https://script.google.com/macros/s/AKfycbzpAIsI9gDVc2TBG5MMSGEA9KjyeBUBN3qVWx1hZ1Ov-wBA9B1IHO7wxd80eLWPnrw/exec');
-        const blogs = await response.json();
-        allBlogs = blogs.reverse();
-        displayBlogs(allBlogs);
-      } catch (error) {
-        container.innerHTML = "<p>Error loading blog posts. Please try again later.</p>";
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sputnik Cosmotics Blog</title>
+    <style>
+      body {
+        background-color: #0d0f1b;
+        color: white;
+        font-family: 'Segoe UI', sans-serif;
+        margin: 0;
+        padding: 0;
       }
-    }
-
-    function displayBlogs(blogs) {
-      const container = document.getElementById('blog-container');
-      container.innerHTML = '';
-
-      if (blogs.length === 0) {
-        container.innerHTML = '<p>No blog posts found.</p>';
-        return;
+      h1 {
+        margin: 0;
+        font-size: 2.5rem;
+        color: #00ffc8;
       }
+      .submit-btn {
+        display: inline-block;
+        margin-top: 1rem;
+        padding: 0.6rem 1.2rem;
+        background-color: #00ffc8;
+        color: #0d0f1b;
+        text-decoration: none;
+        font-weight: bold;
+        border-radius: 8px;
+        transition: 0.2s ease;
+      }
+      .submit-btn:hover {
+        background-color: #00e6b3;
+      }
+      .container {
+        padding: 2rem;
+        max-width: 1000px;
+        margin: auto;
+      }
+      .search-bar {
+        width: 100%;
+        padding: 0.8rem;
+        border: none;
+        border-radius: 6px;
+        margin-bottom: 1.5rem;
+        font-size: 1rem;
+      }
+      .blog-post {
+        background-color: #1a1f34;
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 255, 255, 0.1);
+      }
+      .blog-post h2 {
+        margin-top: 0;
+        color: #00ffc8;
+      }
+      .blog-post img {
+        max-width: 100%;
+        margin-top: 1rem;
+        border-radius: 8px;
+      }
+      .meta {
+        color: #aaa;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+      }
+      .like-btn {
+        background-color: transparent;
+        border: none;
+        color: #00ffc8;
+        font-size: 1rem;
+        cursor: pointer;
+      }
+    </style>
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+      import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+      import { renderNavbar } from "./navbar.js";const firebaseConfig = {
+    apiKey: "AIzaSyCiI1zHK3pJgyOO_6R8_VsanoXGySAGk9k",
+    authDomain: "sputnik-cosmotics.firebaseapp.com",
+    projectId: "sputnik-cosmotics",
+    storageBucket: "sputnik-cosmotics.appspot.com",
+    messagingSenderId: "197760107068",
+    appId: "1:197760107068:web:27f8aaff43dd072645f939"
+  };
 
-      blogs.forEach((post, index) => {
-        const blogDiv = document.createElement('div');
-        blogDiv.className = 'blog-post';
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
 
-        const likes = localStorage.getItem(`likes-${index}`) || 0;
+  renderNavbar();
 
-        blogDiv.innerHTML = `
-          <h2>${post.title}</h2>
-          <div class="meta">By ${post.author} | ${post.date}</div>
-          <p>${post.content.replace(/\n/g, '<br>')}</p>
-          ${post.image ? `<img src="${post.image}" alt="Blog image" />` : ''}
-          <button class="like-btn" onclick="likePost(${index})">❤️ Like (<span id="like-count-${index}">${likes}</span>)</button>
-        `;
+  onAuthStateChanged(auth, (user) => {
+    const profileLink = document.getElementById("profile-link");
+    if (user && profileLink) {
+      profileLink.href = `user.html?uid=${user.uid}`;
+    }
+  });
+</script>
 
-        container.appendChild(blogDiv);
-      });
+  </head>
+  <body>
+    <header style="background-color:#111627;padding:1rem;text-align:center;border-bottom:1px solid #1f2a40;">
+      <h1>Community Blog</h1>
+      <div class="top-bar">
+        <a
+          href="https://docs.google.com/forms/d/e/1FAIpQLSfCUeOkuupr-WyyC2UgQu-cyqGgPXECj7Yolqnz4NGbRFxv0w/viewform?usp=header"
+          class="submit-btn"
+          target="_blank"
+          >+ Submit a Blog</a
+        >
+      </div>
+    </header>
+    <div class="container">
+      <input
+        type="text"
+        id="searchInput"
+        class="search-bar"
+        placeholder="Search blog posts..."
+      />
+      <div id="blog-container">
+        <p>Loading blogs...</p>
+      </div>
+    </div>
+    <script>
+      let allBlogs = [];async function loadBlogs() {
+    const container = document.getElementById("blog-container");
+    try {
+      const response = await fetch(
+        "https://script.google.com/macros/s/AKfycbzpAIsI9gDVc2TBG5MMSGEA9KjyeBUBN3qVWx1hZ1Ov-wBA9B1IHO7wxd80eLWPnrw/exec"
+      );
+      const blogs = await response.json();
+      allBlogs = blogs.reverse();
+      displayBlogs(allBlogs);
+    } catch (error) {
+      container.innerHTML =
+        "<p>Error loading blog posts. Please try again later.</p>";
+    }
+  }
+
+  function displayBlogs(blogs) {
+    const container = document.getElementById("blog-container");
+    container.innerHTML = "";
+
+    if (blogs.length === 0) {
+      container.innerHTML = "<p>No blog posts found.</p>";
+      return;
     }
 
-    function likePost(index) {
-      const key = `likes-${index}`;
-      let currentLikes = parseInt(localStorage.getItem(key) || '0');
-      currentLikes++;
-      localStorage.setItem(key, currentLikes);
-      document.getElementById(`like-count-${index}`).innerText = currentLikes;
-    }
+    blogs.forEach((post, index) => {
+      const blogDiv = document.createElement("div");
+      blogDiv.className = "blog-post";
 
-    document.getElementById('searchInput').addEventListener('input', (e) => {
-      const term = e.target.value.toLowerCase();
-      const filtered = allBlogs.filter(post =>
+      const likes = localStorage.getItem(`likes-${index}`) || 0;
+
+      blogDiv.innerHTML = `
+        <h2>${post.title}</h2>
+        <div class="meta">By ${post.author} | ${post.date}</div>
+        <p>${post.content.replace(/\n/g, "<br>")}</p>
+        ${post.image ? `<img src="${post.image}" alt="Blog image" />` : ""}
+        <button class="like-btn" onclick="likePost(${index})">❤️ Like (<span id="like-count-${index}">${likes}</span>)</button>
+      `;
+
+      container.appendChild(blogDiv);
+    });
+  }
+
+  function likePost(index) {
+    const key = `likes-${index}`;
+    let currentLikes = parseInt(localStorage.getItem(key) || "0");
+    currentLikes++;
+    localStorage.setItem(key, currentLikes);
+    document.getElementById(`like-count-${index}`).innerText = currentLikes;
+  }
+
+  document.getElementById("searchInput").addEventListener("input", (e) => {
+    const term = e.target.value.toLowerCase();
+    const filtered = allBlogs.filter(
+      (post) =>
         post.title.toLowerCase().includes(term) ||
         post.content.toLowerCase().includes(term)
-      );
-      displayBlogs(filtered);
-    });
+    );
+    displayBlogs(filtered);
+  });
 
-    loadBlogs();
-  </script></body>
+  loadBlogs();
+</script>
+
+  </body>
 </html>
