@@ -2,163 +2,188 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Sputnik Profile</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sputnik Profile</title>
   <style>
     body {
+      font-family: Arial, sans-serif;
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #0d0f1b;
-      color: white;
     }
     .sidebar {
-      height: 100%;
-      width: 220px;
+      height: 100vh;
+      width: 240px;
       position: fixed;
-      background-color: #111627;
-      padding-top: 20px;
+      background-color: #1a1a1a;
+      color: white;
+      padding-top: 2rem;
     }
     .sidebar a {
-      padding: 10px 20px;
       display: block;
       color: white;
+      padding: 1rem 2rem;
       text-decoration: none;
     }
     .sidebar a:hover {
-      background-color: #00ffc8;
-      color: #0d0f1b;
+      background-color: #333;
     }
     .main {
       margin-left: 240px;
       padding: 2rem;
     }
-    .highlight {
-      color: #00ffc8;
-      font-weight: bold;
+    .profile-box {
+      background: #f3f3f3;
+      padding: 1.5rem;
+      border-radius: 10px;
+      max-width: 600px;
     }
-    input, textarea {
-      padding: 10px;
-      width: 300px;
-      border: none;
-      border-radius: 5px;
-      margin-bottom: 10px;
-      font-size: 1rem;
+    textarea {
+      width: 100%;
+      height: 100px;
+      margin-top: 10px;
     }
     button {
-      padding: 10px 15px;
-      background-color: #00ffc8;
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
       border: none;
+      background-color: #4CAF50;
+      color: white;
       border-radius: 5px;
       cursor: pointer;
-      font-weight: bold;
-      color: #0d0f1b;
     }
     button:hover {
-      background-color: #00e6b3;
+      background-color: #3e8e41;
     }
   </style>
 </head>
 <body>
 
-  <!-- Sidebar -->
   <div class="sidebar">
-    <a href="index.html">🏠 Home</a>
-    <a href="about.html">🧠 About Us</a>
-    <a href="blog.html">📝 Blog</a>
-    <a href="gallery.html">🖼️ Gallery</a>
-    <a href="profile.html">👤 Profile</a>
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="blog.html">Blog</a>
+    <a href="profile.html">Profile</a>
   </div>
 
-  <!-- Main Content -->
   <div class="main">
-    <h1>My Profile</h1>
-    <div id="profile-info">
-      <p><strong>Username:</strong> <span id="display-username">Loading...</span></p>
-      <p><strong>Bio:</strong> <span id="display-bio">Loading...</span></p>
-      <p><strong>Role:</strong> <span id="display-role">Loading...</span></p>
+    <div class="profile-box">
+      <h2>👤 Profile</h2>
+      <p><strong>Username:</strong> <span id="username">Loading...</span></p>
+      <p><strong>Role:</strong> <span id="role">Loading...</span></p>
+      <label for="bio"><strong>Bio:</strong></label><br/>
+      <textarea id="bio" placeholder="Tell us about yourself..."></textarea><br/>
+      <button id="save-btn">Save</button>
+      <button id="sign-btn">Sign In with Google</button>
     </div>
-
-    <h3>Update Info</h3>
-    <input type="text" id="usernameInput" placeholder="Enter username"><br>
-    <textarea id="bioInput" placeholder="Write a short bio"></textarea><br>
-    <button onclick="saveProfile()">Save Profile</button>
-    <button onclick="signOut()">Sign Out</button>
   </div>
 
-  <!-- Firebase SDK -->
+  <!-- Firebase Scripts -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import {
+      getAuth,
+      GoogleAuthProvider,
+      signInWithPopup,
+      signOut,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      setDoc,
+      getDoc
+    } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-    // Firebase Config
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
+      apiKey: "AIzaSyCiI1zHK3pJgyOO_6R8_VsanoXGySAGk9k",
       authDomain: "sputnik-cosmotics.firebaseapp.com",
       projectId: "sputnik-cosmotics",
       storageBucket: "sputnik-cosmotics.appspot.com",
       messagingSenderId: "197760107068",
-      appId: "YOUR_APP_ID"
+      appId: "1:197760107068:web:27f8aaff43dd072645f939"
     };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
-    const provider = new GoogleAuthProvider();
 
-    // Define founder UIDs
-    const founderUids = ["CImstFVO02deRULe8PSCiyO920Y2"]; // ← Replace with your founder UID
+    const founderUID = "CImstFVO02deRULe8PSCiyO920Y2";
+    let currentUser = null;
 
-    // Sign in automatically if not signed in
+    const usernameEl = document.getElementById("username");
+    const roleEl = document.getElementById("role");
+    const bioEl = document.getElementById("bio");
+    const signBtn = document.getElementById("sign-btn");
+    const saveBtn = document.getElementById("save-btn");
+
+    // Auth state listener
     onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        signInWithPopup(auth, provider).catch(alert);
-        return;
-      }
+      if (user) {
+        currentUser = user;
+        usernameEl.textContent = user.displayName;
+        signBtn.textContent = "Sign Out";
 
-      const userRef = doc(db, "users", user.uid);
-      const userSnap = await getDoc(userRef);
+        const userRef = doc(db, "users", user.uid);
+        const docSnap = await getDoc(userRef);
 
-      if (userSnap.exists()) {
-        const data = userSnap.data();
-        document.getElementById("display-username").innerText = data.username || "No username";
-        document.getElementById("display-bio").innerText = data.bio || "No bio";
-        document.getElementById("display-role").innerText = data.role === "founder" ? "🌟 Founder" : "👥 Member";
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          bioEl.value = data.bio || "";
+          roleEl.textContent = data.role || (user.uid === founderUID ? "Founder" : "Member");
+        } else {
+          const role = user.uid === founderUID ? "Founder" : "Member";
+          await setDoc(userRef, {
+            name: user.displayName,
+            bio: "",
+            role
+          });
+          roleEl.textContent = role;
+        }
       } else {
-        // New user: create profile
-        await setDoc(userRef, {
-          username: user.displayName || "Anonymous",
-          bio: "No bio yet.",
-          role: founderUids.includes(user.uid) ? "founder" : "member"
-        });
-        location.reload();
+        currentUser = null;
+        usernameEl.textContent = "Guest";
+        roleEl.textContent = "N/A";
+        signBtn.textContent = "Sign In with Google";
+        bioEl.value = "";
       }
     });
 
-    // Save Profile
-    window.saveProfile = async function () {
-      const user = auth.currentUser;
-      if (!user) return alert("Not signed in.");
+    // Sign in/out toggle
+    signBtn.addEventListener("click", async () => {
+      if (currentUser) {
+        await signOut(auth);
+      } else {
+        try {
+          const provider = new GoogleAuthProvider();
+          await signInWithPopup(auth, provider);
+        } catch (error) {
+          alert("Popup blocked! Please allow popups.");
+          console.error(error);
+        }
+      }
+    });
 
-      const username = document.getElementById("usernameInput").value;
-      const bio = document.getElementById("bioInput").value;
+    // Save profile
+    saveBtn.addEventListener("click", async () => {
+      if (!currentUser) {
+        alert("You must be signed in to save your profile.");
+        return;
+      }
 
-      const userRef = doc(db, "users", user.uid);
-      await setDoc(userRef, {
-        username,
-        bio,
-        role: founderUids.includes(user.uid) ? "founder" : "member"
-      });
+      const bio = bioEl.value;
+      const role = currentUser.uid === founderUID ? "Founder" : "Member";
 
-      alert("Profile updated!");
-      location.reload();
-    };
-
-    // Sign out
-    window.signOut = function () {
-      signOut(auth).then(() => location.reload());
-    };
+      try {
+        await setDoc(doc(db, "users", currentUser.uid), {
+          name: currentUser.displayName,
+          bio,
+          role
+        });
+        alert("Profile saved!");
+      } catch (err) {
+        alert("Error saving profile.");
+        console.error(err);
+      }
+    });
   </script>
-
 </body>
 </html>
