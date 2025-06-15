@@ -1,14 +1,28 @@
-[
-  {
-    "title": "Welcome to the Cosmos",
-    "author": "Nafinul Islam Nirob",
-    "date": "2025-06-14",
-    "content": "Our journey begins with the stars. Stay tuned for cosmic insights!"
-  },
-  {
-    "title": "Black Holes 101",
-    "author": "Tahsin Haider",
-    "date": "2025-06-13",
-    "content": "Black holes aren't holes. They're massive cosmic objects that bend spacetime!"
-  }
-]
+function doGet() {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Form Responses 1"); // Change name if needed
+  const data = sheet.getDataRange().getValues();
+  
+  const headers = data[0];
+  const rows = data.slice(1);
+
+  const posts = rows
+    .filter(row => row[0]) // skip empty rows
+    .map(row => {
+      return {
+        title: row[1],      // Assuming: Column B = Title
+        author: row[2],     // Column C = Author
+        date: formatDate(row[0]), // Column A = Timestamp
+        content: row[3],    // Column D = Blog content
+        image: row[4] || "" // Optional: Column E = Image URL
+      };
+    });
+
+  return ContentService
+    .createTextOutput(JSON.stringify(posts))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+// Optional: formats the date like 2025-06-15
+function formatDate(date) {
+  return Utilities.formatDate(new Date(date), Session.getScriptTimeZone(), "yyyy-MM-dd");
+}
