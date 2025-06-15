@@ -2,196 +2,280 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Profile - Sputnik Cosmotics</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sputnik Profile</title>
   <style>
-    /* Basic styling for profile page */
-    .profile-container {
-      max-width: 600px;
-      margin: 2rem auto;
-      padding: 1rem;
-      text-align: center;
+    /* Cosmic background */
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+      color: white;
+      overflow-x: hidden;
     }
+
+    .stars {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      background: url('https://raw.githubusercontent.com/kilian/fake3dplanets/main/public/stars.png') repeat;
+      animation: moveStars 100s linear infinite;
+      z-index: 0;
+    }
+
+    @keyframes moveStars {
+      from { background-position: 0 0; }
+      to { background-position: -10000px 5000px; }
+    }
+
+    .sidebar {
+      height: 100vh;
+      width: 240px;
+      position: fixed;
+      background-color: rgba(0, 0, 0, 0.8);
+      padding-top: 2rem;
+      z-index: 1;
+    }
+
+    .sidebar a {
+      display: block;
+      color: white;
+      padding: 1rem 2rem;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .sidebar a:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .main {
+      margin-left: 240px;
+      padding: 2rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .profile-box {
+      background: rgba(0, 0, 0, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 2rem;
+      border-radius: 15px;
+      max-width: 600px;
+      margin: auto;
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+
     .profile-pic {
-      width: 150px;
-      height: 150px;
+      width: 120px;
+      height: 120px;
       border-radius: 50%;
       object-fit: cover;
-      border: 3px solid #3f51b5;
-      cursor: pointer;
+      margin-bottom: 1rem;
+      border: 3px solid #00ffff;
+      box-shadow: 0 0 10px #00ffff;
     }
-    input[type="file"] {
-      display: none;
-    }
-    .username-input {
-      margin-top: 1rem;
-      font-size: 1.5rem;
-      font-weight: 600;
-      border: none;
-      border-bottom: 2px solid #3f51b5;
-      outline: none;
+
+    textarea {
       width: 100%;
-      max-width: 300px;
-      text-align: center;
-    }
-    .founder-badge {
-      display: inline-block;
-      background: #3f51b5;
-      color: white;
-      padding: 0.2rem 0.6rem;
-      font-size: 0.8rem;
-      border-radius: 4px;
-      margin-left: 0.5rem;
-      vertical-align: middle;
-      text-decoration: none;
-    }
-    .btn-google {
-      margin: 1rem 0.5rem;
-      background: #4285f4;
-      color: white;
+      height: 100px;
+      margin-top: 10px;
       border: none;
-      padding: 0.6rem 1.2rem;
+      border-radius: 8px;
+      padding: 0.8rem;
+      resize: none;
       font-size: 1rem;
-      border-radius: 4px;
-      cursor: pointer;
     }
-    .btn-logout {
-      background: #d9534f;
-      color: white;
-      border: none;
+
+    button {
+      margin-top: 1rem;
       padding: 0.6rem 1.2rem;
-      font-size: 1rem;
-      border-radius: 4px;
+      border: none;
+      background-color: #00ffff;
+      color: black;
+      font-weight: bold;
+      border-radius: 5px;
       cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #00dddd;
+    }
+
+    .success-box {
+      margin-top: 1rem;
+      color: #00ffcc;
+      font-weight: bold;
+      animation: fadeIn 0.8s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 768px) {
+      .main {
+        margin-left: 0;
+        padding: 1rem;
+      }
+
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        padding: 1rem 0;
+      }
+
+      .sidebar a {
+        padding: 0.5rem;
+        font-size: 0.9rem;
+      }
+
+      .profile-box {
+        padding: 1.2rem;
+      }
     }
   </style>
 </head>
 <body>
-  <!-- Navbar (same as other pages) -->
-  <nav>
-    <ul class="navbar">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="about.html">About Us</a></li>
-      <li><a href="profile.html" class="active">Profile</a></li>
-      <li><a href="blog.html">Blog</a></li>
-      <li><a href="gallery.html">Gallery</a></li>
-    </ul>
-  </nav>
+  <div class="stars"></div>
 
-  <main class="profile-container">
-    <h1>Your Profile</h1>
-    
-    <!-- Profile Picture with default and upload option -->
-    <label for="upload-pic">
-      <img
-        id="profile-pic"
-        src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
-        alt="Profile Picture"
-        class="profile-pic"
-        title="Click to upload a custom profile picture"
-      />
-    </label>
-    <input type="file" id="upload-pic" accept="image/*" />
+  <div class="sidebar">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="blog.html">Blog</a>
+    <a href="profile.html" class="active">Profile</a>
+  </div>
 
-    <!-- Editable Username -->
-    <input
-      type="text"
-      id="username"
-      class="username-input"
-      placeholder="Enter your username"
-      maxlength="30"
-    />
+  <div class="main">
+    <div class="profile-box" id="profile-box">
+      <img id="pfp" class="profile-pic" src="https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png" alt="Profile Picture"/>
+      <h2>👤 Profile</h2>
+      <p><strong>Username:</strong> <span id="username">Guest</span></p>
+      <p><strong>Role:</strong> <span id="role">N/A</span></p>
 
-    <!-- Founders section with founder badge -->
-    <section style="margin-top:2rem;">
-      <h2>Founders</h2>
-      <p>
-        Nafinul Islam Nirob
-        <a href="https://instagram.com/nafinulnirob" target="_blank" class="founder-badge">Founder</a>
-      </p>
-      <p>
-        Abrar Faisal Zarif
-        <a href="https://instagram.com/abrarfaisalz" target="_blank" class="founder-badge">Founder</a>
-      </p>
-      <p>
-        Tahsin Haider
-        <a href="https://instagram.com/tahsinhaider" target="_blank" class="founder-badge">Founder</a>
-      </p>
-    </section>
+      <label for="bio"><strong>Bio:</strong></label><br/>
+      <textarea id="bio" placeholder="Tell us about yourself..."></textarea><br/>
 
-    <!-- Google Sign-In and Log Out Buttons -->
-    <div style="margin-top: 2rem;">
-      <button id="google-signin" class="btn-google">Sign in with Google</button>
-      <button id="logout-btn" class="btn-logout" style="display:none;">Log Out</button>
+      <button id="save-btn">Save</button>
+      <button id="sign-btn">Sign In with Google</button>
+
+      <div id="success-msg" class="success-box" style="display:none;">✅ Profile saved successfully!</div>
     </div>
-  </main>
+  </div>
 
-  <script>
-    // Save and load username from localStorage
-    const usernameInput = document.getElementById('username');
-    const profilePic = document.getElementById('profile-pic');
-    const uploadPicInput = document.getElementById('upload-pic');
+  <!-- Firebase Scripts -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import {
+      getAuth,
+      GoogleAuthProvider,
+      signInWithPopup,
+      signOut,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      setDoc,
+      getDoc
+    } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-    // Load saved username
-    const savedUsername = localStorage.getItem('username');
-    if (savedUsername) {
-      usernameInput.value = savedUsername;
-    }
+    const firebaseConfig = {
+      apiKey: "AIzaSyCiI1zHK3pJgyOO_6R8_VsanoXGySAGk9k",
+      authDomain: "sputnik-cosmotics.firebaseapp.com",
+      projectId: "sputnik-cosmotics",
+      storageBucket: "sputnik-cosmotics.appspot.com",
+      messagingSenderId: "197760107068",
+      appId: "1:197760107068:web:27f8aaff43dd072645f939"
+    };
 
-    usernameInput.addEventListener('input', () => {
-      localStorage.setItem('username', usernameInput.value.trim());
-    });
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const founderUID = "CImstFVO02deRULe8PSCiyO920Y2";
 
-    // Upload and preview custom profile picture (saved in localStorage)
-    uploadPicInput.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (file && file.type.startsWith('image/')) {
-        const reader = new FileReader();
-        reader.onload = function (event) {
-          profilePic.src = event.target.result;
-          localStorage.setItem('profilePic', event.target.result);
-        };
-        reader.readAsDataURL(file);
-      }
-    });
+    const usernameEl = document.getElementById("username");
+    const roleEl = document.getElementById("role");
+    const bioEl = document.getElementById("bio");
+    const signBtn = document.getElementById("sign-btn");
+    const saveBtn = document.getElementById("save-btn");
+    const pfp = document.getElementById("pfp");
+    const successMsg = document.getElementById("success-msg");
 
-    // Load saved profile pic
-    const savedPic = localStorage.getItem('profilePic');
-    if (savedPic) {
-      profilePic.src = savedPic;
-    }
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        usernameEl.textContent = user.displayName;
+        pfp.src = user.photoURL || "https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png";
+        signBtn.textContent = "Sign Out";
 
-    // Google Sign-In & Log Out (simple simulation)
-    const signInBtn = document.getElementById('google-signin');
-    const logoutBtn = document.getElementById('logout-btn');
+        const userRef = doc(db, "users", user.uid);
+        const docSnap = await getDoc(userRef);
 
-    function updateAuthUI(isSignedIn) {
-      if (isSignedIn) {
-        signInBtn.style.display = 'none';
-        logoutBtn.style.display = 'inline-block';
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          bioEl.value = data.bio || "";
+          roleEl.textContent = data.role || (user.uid === founderUID ? "Founder" : "Member");
+        } else {
+          const role = user.uid === founderUID ? "Founder" : "Member";
+          await setDoc(userRef, {
+            name: user.displayName,
+            bio: "",
+            role
+          });
+          roleEl.textContent = role;
+        }
       } else {
-        signInBtn.style.display = 'inline-block';
-        logoutBtn.style.display = 'none';
+        usernameEl.textContent = "Guest";
+        roleEl.textContent = "N/A";
+        signBtn.textContent = "Sign In with Google";
+        pfp.src = "https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png";
+        bioEl.value = "";
       }
-    }
-
-    // For demo, "sign in" just sets a flag in localStorage
-    signInBtn.addEventListener('click', () => {
-      localStorage.setItem('signedIn', 'true');
-      updateAuthUI(true);
-      alert('Signed in successfully!');
     });
 
-    logoutBtn.addEventListener('click', () => {
-      localStorage.removeItem('signedIn');
-      updateAuthUI(false);
-      alert('Logged out!');
+    signBtn.addEventListener("click", async () => {
+      if (auth.currentUser) {
+        await signOut(auth);
+      } else {
+        try {
+          const provider = new GoogleAuthProvider();
+          await signInWithPopup(auth, provider);
+        } catch (error) {
+          alert("Popup blocked! Please allow popups in your browser.");
+        }
+      }
     });
 
-    // Initialize auth UI on page load
-    const isSignedIn = localStorage.getItem('signedIn') === 'true';
-    updateAuthUI(isSignedIn);
+    saveBtn.addEventListener("click", async () => {
+      const user = auth.currentUser;
+      if (!user) {
+        alert("Sign in first.");
+        return;
+      }
+
+      const bio = bioEl.value.trim();
+      const role = user.uid === founderUID ? "Founder" : "Member";
+
+      await setDoc(doc(db, "users", user.uid), {
+        name: user.displayName,
+        bio,
+        role
+      });
+
+      // Show success UI
+      successMsg.style.display = "block";
+      setTimeout(() => {
+        successMsg.style.display = "none";
+      }, 2500);
+    });
   </script>
 </body>
 </html>
