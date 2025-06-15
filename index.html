@@ -1,4 +1,31 @@
 <!DOCTYPE html>
+<body>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+    import { renderNavbar } from "./navbar.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCiI1zHK3pJgyOO_6R8_VsanoXGySAGk9k",
+      authDomain: "sputnik-cosmotics.firebaseapp.com",
+      projectId: "sputnik-cosmotics",
+      storageBucket: "sputnik-cosmotics.appspot.com",
+      messagingSenderId: "197760107068",
+      appId: "1:197760107068:web:27f8aaff43dd072645f939"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    renderNavbar(); // Renders the nav HTML
+
+    onAuthStateChanged(auth, (user) => {
+      const profileLink = document.getElementById("profile-link");
+      if (user && profileLink) {
+        profileLink.href = `user.html?uid=${user.uid}`;
+      }
+    });
+  </script>
 <nav style="text-align:center; background:#0d0f1b; padding:1rem; border-bottom:1px solid #1f2a40;">
   <a href="index.html" style="color:#00ffc8; margin:0 15px; text-decoration:none;">Home</a>
   <a href="about.html" style="color:#00ffc8; margin:0 15px; text-decoration:none;">About</a>
