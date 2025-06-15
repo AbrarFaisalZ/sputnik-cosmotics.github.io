@@ -1,4 +1,5 @@
 <body>
+  <body style="margin:0;background:#0d0d1a;color:white;">
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
@@ -16,22 +17,16 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    renderNavbar(); // Renders the nav HTML
+    renderNavbar(); // Inject the navbar into the page
 
+    // Dynamically change profile link
     onAuthStateChanged(auth, (user) => {
       const profileLink = document.getElementById("profile-link");
       if (user && profileLink) {
         profileLink.href = `user.html?uid=${user.uid}`;
       }
     });
-  </script>
-<nav style="text-align:center; background:#0d0f1b; padding:1rem; border-bottom:1px solid #1f2a40;">
-  <a href="index.html" style="color:#00ffc8; margin:0 15px; text-decoration:none;">Home</a>
-  <a href="about.html" style="color:#00ffc8; margin:0 15px; text-decoration:none;">About</a>
-  <a href="blog.html" style="color:#00ffc8; margin:0 15px; text-decoration:none;">Blog</a>
-  <a href="profile.html" style="color:#00ffc8; margin:0 15px; text-decoration:none;">profile</a>
-  <a href="journal.html" style="color:#00ffc8; margin:0 15px; text-decoration:none;">Journal</a>
-</nav>
+      </script>
 <section id="about" style="padding: 60px 20px; background: radial-gradient(circle at center, #0a0a23, #000); color: #f1f1f1; text-align: center;">
   <h2 style="font-size: 2.5em; color: #ffd700; margin-bottom: 20px;">About Us</h2>
   
