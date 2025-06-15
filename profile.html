@@ -191,10 +191,8 @@
           role
         });
 
-        // Refresh UI
-        usernameEl.textContent = user.displayName;
-        roleEl.textContent = role;
-        alert("Profile saved!");
+        // Redirect to user view page
+        window.location.href = `user.html?uid=${user.uid}`;
       } catch (err) {
         alert("Error saving profile: " + err.message);
       }
