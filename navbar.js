@@ -7,6 +7,7 @@ export function renderNavbar() {
         <a href="index.html" style="color:white;text-decoration:none;">Home</a>
         <a href="about.html" style="color:white;text-decoration:none;">About</a>
         <a href="blog.html" style="color:white;text-decoration:none;">Blog</a>
+        <a href="journal.html style="color:green;text-decoration:none;>Journal</a>
         <a id="profile-link" href="profile.html" style="color:white;text-decoration:none;">Profile</a>
       </div>
     </nav>
