@@ -1,301 +1,207 @@
 <!DOCTYPE html>
 <html lang="en">
-<nav style="
-  background: #222831;
-  padding: 12px 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 28px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.6);
-">
-  <a href="index.html" style="
-    color: #eee;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 1.1rem;
-    padding: 6px 12px;
-    border-radius: 6px;
-    transition: background-color 0.3s ease;
-  "
-  onmouseover="this.style.backgroundColor='#00adb5'; this.style.color='#222831';"
-  onmouseout="this.style.backgroundColor='transparent'; this.style.color='#eee';"
-  >Home</a>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User Profile</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #282c34, #3a3f55);
+      color: #eee;
+    }
 
-  <!-- Avatar image -->
-<img
-  id="avatar"
-  class="avatar"
-  src=""
-  alt="User Avatar"
-  title="Click to change avatar"
-  style="cursor: pointer;"
-  />
+    /* Navbar */
+    nav {
+      background: #222831;
+      padding: 12px 24px;
+      display: flex;
+      justify-content: center;
+      gap: 28px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+    }
 
-<!-- Hidden file input for uploading -->
-<input type="file" id="avatarUpload" accept="image/*" style="display:none;" />
+    nav a {
+      color: #eee;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.1rem;
+      padding: 6px 12px;
+      border-radius: 6px;
+      transition: 0.3s;
+    }
 
+    nav a:hover {
+      background: #00adb5;
+      color: #222831;
+    }
+
+    nav a.active {
+      color: #00adb5;
+      background-color: #393e46;
+      font-weight: 700;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 24px;
+      background: #222831;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.7);
+      text-align: center;
+    }
+
+    .avatar {
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #00adb5;
+      margin-bottom: 1.5rem;
+      cursor: pointer;
+    }
+
+    #usernameDisplay, #usernameInput {
+      font-size: 2.2rem;
+      font-weight: bold;
+      margin: 0.2rem 0;
+    }
+
+    #usernameDisplay:hover {
+      color: #00adb5;
+      cursor: pointer;
+    }
+
+    #usernameInput {
+      border: none;
+      border-bottom: 2px solid #00adb5;
+      background: transparent;
+      color: #eee;
+      outline: none;
+      display: none;
+    }
+
+    .badge-founder {
+      margin-top: 10px;
+      background: linear-gradient(45deg, #f39c12, #d35400);
+      color: white;
+      font-weight: 600;
+      font-size: 1rem;
+      padding: 6px 14px;
+      border-radius: 20px;
+      display: inline-block;
+      box-shadow: 0 0 14px #f39c12;
+    }
+
+    .bio {
+      margin-top: 12px;
+      font-size: 1.1rem;
+      color: #ccc;
+    }
+
+    .btns {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btns button {
+      padding: 10px 20px;
+      border-radius: 6px;
+      border: none;
+      font-weight: bold;
+      background-color: #00adb5;
+      color: #fff;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .btns button:hover {
+      background-color: #0099a1;
+    }
+
+    #avatarUpload {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav>
+  <a href="index.html">Home</a>
+  <a href="blogs.html">Blogs</a>
+  <a href="profile.html" class="active">Profile</a>
+  <a href="about.html">About Us</a>
+</nav>
+
+<!-- Main Profile Container -->
+<div class="container">
+  <!-- Avatar Upload -->
+  <img id="avatar" class="avatar" src="" alt="Avatar" title="Click to upload image" />
+  <input type="file" id="avatarUpload" accept="image/*" />
+
+  <!-- Username -->
+  <div>
+    <span id="usernameDisplay">username123</span>
+    <input type="text" id="usernameInput" maxlength="20" />
+  </div>
+
+  <!-- Founder Badge -->
+  <div id="badgeContainer"></div>
+
+  <!-- Bio -->
+  <p class="bio">Public profile. Others can view your username and profile picture.</p>
+
+  <!-- Buttons -->
+  <div class="btns">
+    <button onclick="signIn()">Sign in with Google</button>
+    <button onclick="logOut()">Log Out</button>
+  </div>
+</div>
+
+<!-- Script -->
 <script>
   const avatar = document.getElementById('avatar');
   const avatarUpload = document.getElementById('avatarUpload');
   const usernameDisplay = document.getElementById('usernameDisplay');
-
-  // Function to generate default avatar from username
-  function getDefaultAvatar(username) {
-    return `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=00adb5&color=fff&size=130`;
-  }
-
-  // Load avatar: use uploaded image if any, else default avatar
-  let uploadedImageDataUrl = ''; // Store uploaded image data URL here
-
-  function updateAvatar() {
-    const username = usernameDisplay.textContent.trim() || 'User';
-    if (uploadedImageDataUrl) {
-      avatar.src = uploadedImageDataUrl;
-    } else {
-      avatar.src = getDefaultAvatar(username);
-    }
-    avatar.alt = `${username}'s Avatar`;
-  }
-
-  // When avatar clicked, trigger file upload
-  avatar.addEventListener('click', () => {
-    avatarUpload.click();
-  });
-
-  // Handle file upload
-  avatarUpload.addEventListener('change', event => {
-    const file = event.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = e => {
-      uploadedImageDataUrl = e.target.result;
-      updateAvatar();
-    };
-    reader.readAsDataURL(file);
-  });
-
-  // Update avatar on username change (if no custom avatar)
-  usernameDisplay.addEventListener('DOMSubtreeModified', () => {
-    if (!uploadedImageDataUrl) {
-      updateAvatar();
-    }
-  });
-
-  // Initialize avatar on page load
-  updateAvatar();
-</script>
-  <a href="profile.html" style="
-    color: #00adb5;
-    text-decoration: none;
-    font-weight: 700;
-    font-size: 1.1rem;
-    padding: 6px 12px;
-    border-radius: 6px;
-    background-color: #393e46;
-  "
-  aria-current="page"
-  >Profile</a>
-
-  <a href="blogs.html" style="
-    color: #eee;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 1.1rem;
-    padding: 6px 12px;
-    border-radius: 6px;
-    transition: background-color 0.3s ease;
-  "
-  onmouseover="this.style.backgroundColor='#00adb5'; this.style.color='#222831';"
-  onmouseout="this.style.backgroundColor='transparent'; this.style.color='#eee';"
-  >Blogs</a>
-
-  <a href="about.html" style="
-    color: #eee;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 1.1rem;
-    padding: 6px 12px;
-    border-radius: 6px;
-    transition: background-color 0.3s ease;
-  "
-  onmouseover="this.style.backgroundColor='#00adb5'; this.style.color='#222831';"
-  onmouseout="this.style.backgroundColor='transparent'; this.style.color='#eee';"
-  >About Us</a>
-</nav>
-  <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>User Profile</title>
-<style>
-  /* Background matching other pages style */
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #282c34, #3a3f55);
-    margin: 0;
-    padding: 2rem 0;
-    color: #eee;
-    display: flex;
-    justify-content: center;
-  }
-
-  .profile-container {
-    max-width: 540px;
-    width: 90%;
-    background: #222831;
-    padding: 2rem 2.5rem;
-    border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.7);
-    text-align: center;
-  }
-
-  .avatar {
-    width: 130px;
-    height: 130px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid #00adb5;
-    margin: 0 auto 1.5rem;
-    background-color: #393e46;
-    cursor: default;
-  }
-
-  .username-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 1rem;
-  }
-
-  #usernameDisplay {
-    font-size: 2.6rem;
-    font-weight: 700;
-    cursor: pointer;
-    color: #eeeeee;
-    user-select: none;
-    transition: color 0.3s ease;
-  }
-  #usernameDisplay:hover {
-    color: #00adb5;
-  }
-
-  #usernameInput {
-    font-size: 2.6rem;
-    font-weight: 700;
-    border: none;
-    border-bottom: 2px solid #00adb5;
-    background: transparent;
-    color: #eee;
-    outline: none;
-    width: 280px;
-    display: none;
-  }
-
-  /* Founder badge */
-  .badge-founder {
-    background: linear-gradient(45deg, #f39c12, #d35400);
-    color: white;
-    font-weight: 600;
-    font-size: 1rem;
-    padding: 5px 16px;
-    border-radius: 20px;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    box-shadow: 0 0 14px #f39c12;
-    user-select: none;
-    transition: background 0.4s ease, box-shadow 0.4s ease;
-  }
-  .badge-founder:hover {
-    background: linear-gradient(45deg, #d35400, #f39c12);
-    box-shadow: 0 0 22px #f39c12;
-  }
-
-  .badge-founder svg {
-    width: 18px;
-    height: 18px;
-    fill: currentColor;
-  }
-
-  .bio {
-    font-size: 1.25rem;
-    color: #ccc;
-    line-height: 1.5;
-    margin-top: 0.75rem;
-    max-width: 420px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  @media (max-width: 480px) {
-    #usernameDisplay,
-    #usernameInput {
-      font-size: 2rem;
-      width: 200px;
-    }
-    .bio {
-      font-size: 1rem;
-    }
-  }
-</style>
-</head>
-<body>
-
-<div class="profile-container">
-  <!-- User Avatar -->
-  <img
-    id="avatar"
-    class="avatar"
-    src=""
-    alt="User Avatar"
-    title="User Avatar"
-  />
-
-  <!-- Username with inline edit -->
-  <div class="username-container">
-    <span id="usernameDisplay" title="Click to edit username">username123</span>
-    <input type="text" id="usernameInput" maxlength="20" />
-    <div class="badge-founder" title="Founder Badge">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
-        <path d="M8 0a5 5 0 0 1 5 5c0 1.007-.37 1.973-1 2.69V14H4V7.69A3.978 3.978 0 0 1 3 5a5 5 0 0 1 5-5zm2 5a2 2 0 1 0-4 0 2 2 0 0 0 4 0z"/>
-      </svg>
-      Founder
-    </div>
-  </div>
-
-  <!-- User Bio -->
-  <p class="bio" id="bio">
-    Passionate about astronomy and community building. Love sharing knowledge and exploring the universe.
-  </p>
-</div>
-
-<script>
-  // Default avatar URL function (Google-style)
-  function getDefaultAvatar(username) {
-    // Generate a Google avatar URL based on username hash (or any fallback)
-    // For simplicity, use a placeholder service with unique query param
-    return `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=00adb5&color=fff&size=130`;
-  }
-
-  // Set avatar src: if userAvatar is empty, fallback to default avatar
-  const userAvatar = ''; // Put user's avatar URL here or keep empty for default
-  const usernameDisplay = document.getElementById('usernameDisplay');
-  const avatar = document.getElementById('avatar');
-
-  function updateAvatar() {
-    const username = usernameDisplay.textContent.trim() || 'User';
-    avatar.src = userAvatar || getDefaultAvatar(username);
-    avatar.alt = `${username}'s Avatar`;
-  }
-
-  // Run on load
-  updateAvatar();
-
-  // Inline username editing logic
   const usernameInput = document.getElementById('usernameInput');
+  const badgeContainer = document.getElementById('badgeContainer');
 
+  // Dummy data (replace with real logic from your system)
+  const isFounder = true;
+
+  function getDefaultAvatar(username) {
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=00adb5&color=fff&size=130`;
+  }
+
+  function updateAvatar() {
+    const username = usernameDisplay.textContent.trim();
+    const uploaded = localStorage.getItem('customPfp');
+    avatar.src = uploaded || getDefaultAvatar(username);
+  }
+
+  function updateBadge() {
+    if (isFounder) {
+      badgeContainer.innerHTML = `<div class="badge-founder">👑 Founder</div>`;
+    } else {
+      badgeContainer.innerHTML = '';
+    }
+  }
+
+  function saveUsername() {
+    const newName = usernameInput.value.trim() || 'username123';
+    usernameDisplay.textContent = newName;
+    usernameDisplay.style.display = 'inline-block';
+    usernameInput.style.display = 'none';
+    updateAvatar();
+  }
+
+  // Inline username edit
   usernameDisplay.addEventListener('click', () => {
     usernameInput.value = usernameDisplay.textContent;
     usernameDisplay.style.display = 'none';
@@ -303,26 +209,41 @@
     usernameInput.focus();
   });
 
-  function saveUsername() {
-    let newUsername = usernameInput.value.trim();
-    if (!newUsername) {
-      newUsername = 'username123'; // fallback default
-    }
-    usernameDisplay.textContent = newUsername;
-    usernameDisplay.style.display = 'inline-block';
-    usernameInput.style.display = 'none';
+  usernameInput.addEventListener('blur', saveUsername);
+  usernameInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter') usernameInput.blur();
+  });
 
-    // Update avatar with new username for default avatar
-    updateAvatar();
+  // Avatar upload
+  avatar.addEventListener('click', () => {
+    avatarUpload.click();
+  });
+
+  avatarUpload.addEventListener('change', event => {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      localStorage.setItem('customPfp', e.target.result);
+      updateAvatar();
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // Google Sign-In simulation
+  function signIn() {
+    alert('Google Sign-In triggered (mock)');
   }
 
-  usernameInput.addEventListener('blur', saveUsername);
+  function logOut() {
+    localStorage.removeItem('customPfp');
+    alert('Logged out (mock)');
+    location.reload();
+  }
 
-  usernameInput.addEventListener('keydown', e => {
-    if (e.key === 'Enter') {
-      usernameInput.blur();
-    }
-  });
+  // Init
+  updateAvatar();
+  updateBadge();
 </script>
 
 </body>
