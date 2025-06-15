@@ -80,7 +80,9 @@
     <div class="bio" id="bio">Fetching bio...</div><div class="section">
   <h3>🎖 Achievements</h3>
   <div id="achievements">
-    <span class="badge">Astronaut</span>
+    <span class="badge">🚀 Astronaut</span>
+    <span class="badge">🌟 Stellar Blogger</span>
+    <span class="badge">💬 Community Member</span>
   </div>
 </div>
 
@@ -125,9 +127,8 @@
         document.getElementById("username").textContent = data.name;
         document.getElementById("role").textContent = data.role;
         document.getElementById("bio").textContent = data.bio || "No bio available.";
-        // Optionally add founder badge
         if (data.role === "Founder") {
-          document.getElementById("achievements").innerHTML += '<span class="badge">Founder</span>';
+          document.getElementById("achievements").innerHTML += '<span class="badge">🛡️ Founder</span>';
         }
       } else {
         document.getElementById("username").textContent = "User not found";
@@ -135,7 +136,6 @@
       }
     }
 
-    // Static fallback pfp (public profile doesn't auto-fetch auth photo)
     document.getElementById("pfp").src = "https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png";
 
     loadProfile();
