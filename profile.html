@@ -23,6 +23,69 @@
   onmouseout="this.style.backgroundColor='transparent'; this.style.color='#eee';"
   >Home</a>
 
+  <!-- Avatar image -->
+<img
+  id="avatar"
+  class="avatar"
+  src=""
+  alt="User Avatar"
+  title="Click to change avatar"
+  style="cursor: pointer;"
+  />
+
+<!-- Hidden file input for uploading -->
+<input type="file" id="avatarUpload" accept="image/*" style="display:none;" />
+
+<script>
+  const avatar = document.getElementById('avatar');
+  const avatarUpload = document.getElementById('avatarUpload');
+  const usernameDisplay = document.getElementById('usernameDisplay');
+
+  // Function to generate default avatar from username
+  function getDefaultAvatar(username) {
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=00adb5&color=fff&size=130`;
+  }
+
+  // Load avatar: use uploaded image if any, else default avatar
+  let uploadedImageDataUrl = ''; // Store uploaded image data URL here
+
+  function updateAvatar() {
+    const username = usernameDisplay.textContent.trim() || 'User';
+    if (uploadedImageDataUrl) {
+      avatar.src = uploadedImageDataUrl;
+    } else {
+      avatar.src = getDefaultAvatar(username);
+    }
+    avatar.alt = `${username}'s Avatar`;
+  }
+
+  // When avatar clicked, trigger file upload
+  avatar.addEventListener('click', () => {
+    avatarUpload.click();
+  });
+
+  // Handle file upload
+  avatarUpload.addEventListener('change', event => {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      uploadedImageDataUrl = e.target.result;
+      updateAvatar();
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // Update avatar on username change (if no custom avatar)
+  usernameDisplay.addEventListener('DOMSubtreeModified', () => {
+    if (!uploadedImageDataUrl) {
+      updateAvatar();
+    }
+  });
+
+  // Initialize avatar on page load
+  updateAvatar();
+</script>
   <a href="profile.html" style="
     color: #00adb5;
     text-decoration: none;
