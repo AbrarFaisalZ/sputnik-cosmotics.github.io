@@ -96,7 +96,7 @@
     async function loadBlogs() {
       const container = document.getElementById('blog-container');
       try {
-        const response = await fetch('https://script.google.com/macros/s/AKfycby5IFgrogk6axaeSy_yenkMxAiMHT4r4GXrVs3SCClqvKIBJ-DYK_DRhgpgPKI1J90/exec');
+        const response = await fetch('https://script.google.com/macros/s/AKfycbz_e-DI5GFVaILq2z1Yb-hP_Jj4beEZo47nvFZknOufHhhXzuqB34CYNW9U2eXmc-g/exec');
         const blogs = await response.json();
         allBlogs = blogs.reverse();
         displayBlogs(allBlogs);
