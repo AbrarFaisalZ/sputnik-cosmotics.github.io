@@ -2,249 +2,163 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <title>Sputnik Profile</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>User Profile</title>
   <style>
     body {
       margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #282c34, #3a3f55);
-      color: #eee;
-    }
-
-    /* Navbar */
-    nav {
-      background: #222831;
-      padding: 12px 24px;
-      display: flex;
-      justify-content: center;
-      gap: 28px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.6);
-    }
-
-    nav a {
-      color: #eee;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 1.1rem;
-      padding: 6px 12px;
-      border-radius: 6px;
-      transition: 0.3s;
-    }
-
-    nav a:hover {
-      background: #00adb5;
-      color: #222831;
-    }
-
-    nav a.active {
-      color: #00adb5;
-      background-color: #393e46;
-      font-weight: 700;
-    }
-
-    .container {
-      max-width: 600px;
-      margin: 40px auto;
-      padding: 24px;
-      background: #222831;
-      border-radius: 12px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.7);
-      text-align: center;
-    }
-
-    .avatar {
-      width: 130px;
-      height: 130px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 3px solid #00adb5;
-      margin-bottom: 1.5rem;
-      cursor: pointer;
-    }
-
-    #usernameDisplay, #usernameInput {
-      font-size: 2.2rem;
-      font-weight: bold;
-      margin: 0.2rem 0;
-    }
-
-    #usernameDisplay:hover {
-      color: #00adb5;
-      cursor: pointer;
-    }
-
-    #usernameInput {
-      border: none;
-      border-bottom: 2px solid #00adb5;
-      background: transparent;
-      color: #eee;
-      outline: none;
-      display: none;
-    }
-
-    .badge-founder {
-      margin-top: 10px;
-      background: linear-gradient(45deg, #f39c12, #d35400);
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0d0f1b;
       color: white;
-      font-weight: 600;
-      font-size: 1rem;
-      padding: 6px 14px;
-      border-radius: 20px;
-      display: inline-block;
-      box-shadow: 0 0 14px #f39c12;
     }
-
-    .bio {
-      margin-top: 12px;
-      font-size: 1.1rem;
-      color: #ccc;
+    .sidebar {
+      height: 100%;
+      width: 220px;
+      position: fixed;
+      background-color: #111627;
+      padding-top: 20px;
     }
-
-    .btns {
-      margin-top: 20px;
-      display: flex;
-      justify-content: center;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-
-    .btns button {
+    .sidebar a {
       padding: 10px 20px;
-      border-radius: 6px;
-      border: none;
+      display: block;
+      color: white;
+      text-decoration: none;
+    }
+    .sidebar a:hover {
+      background-color: #00ffc8;
+      color: #0d0f1b;
+    }
+    .main {
+      margin-left: 240px;
+      padding: 2rem;
+    }
+    .highlight {
+      color: #00ffc8;
       font-weight: bold;
-      background-color: #00adb5;
-      color: #fff;
+    }
+    input, textarea {
+      padding: 10px;
+      width: 300px;
+      border: none;
+      border-radius: 5px;
+      margin-bottom: 10px;
+      font-size: 1rem;
+    }
+    button {
+      padding: 10px 15px;
+      background-color: #00ffc8;
+      border: none;
+      border-radius: 5px;
       cursor: pointer;
-      transition: 0.3s;
+      font-weight: bold;
+      color: #0d0f1b;
     }
-
-    .btns button:hover {
-      background-color: #0099a1;
-    }
-
-    #avatarUpload {
-      display: none;
+    button:hover {
+      background-color: #00e6b3;
     }
   </style>
 </head>
 <body>
 
-<!-- Navbar -->
-<nav>
-  <a href="index.html">Home</a>
-  <a href="blogs.html">Blogs</a>
-  <a href="profile.html" class="active">Profile</a>
-  <a href="about.html">About Us</a>
-</nav>
-
-<!-- Main Profile Container -->
-<div class="container">
-  <!-- Avatar Upload -->
-  <img id="avatar" class="avatar" src="" alt="Avatar" title="Click to upload image" />
-  <input type="file" id="avatarUpload" accept="image/*" />
-
-  <!-- Username -->
-  <div>
-    <span id="usernameDisplay">username123</span>
-    <input type="text" id="usernameInput" maxlength="20" />
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <a href="index.html">🏠 Home</a>
+    <a href="about.html">🧠 About Us</a>
+    <a href="blog.html">📝 Blog</a>
+    <a href="gallery.html">🖼️ Gallery</a>
+    <a href="profile.html">👤 Profile</a>
   </div>
 
-  <!-- Founder Badge -->
-  <div id="badgeContainer"></div>
+  <!-- Main Content -->
+  <div class="main">
+    <h1>My Profile</h1>
+    <div id="profile-info">
+      <p><strong>Username:</strong> <span id="display-username">Loading...</span></p>
+      <p><strong>Bio:</strong> <span id="display-bio">Loading...</span></p>
+      <p><strong>Role:</strong> <span id="display-role">Loading...</span></p>
+    </div>
 
-  <!-- Bio -->
-  <p class="bio">Public profile. Others can view your username and profile picture.</p>
-
-  <!-- Buttons -->
-  <div class="btns">
-    <button onclick="signIn()">Sign in with Google</button>
-    <button onclick="logOut()">Log Out</button>
+    <h3>Update Info</h3>
+    <input type="text" id="usernameInput" placeholder="Enter username"><br>
+    <textarea id="bioInput" placeholder="Write a short bio"></textarea><br>
+    <button onclick="saveProfile()">Save Profile</button>
+    <button onclick="signOut()">Sign Out</button>
   </div>
-</div>
 
-<!-- Script -->
-<script>
-  const avatar = document.getElementById('avatar');
-  const avatarUpload = document.getElementById('avatarUpload');
-  const usernameDisplay = document.getElementById('usernameDisplay');
-  const usernameInput = document.getElementById('usernameInput');
-  const badgeContainer = document.getElementById('badgeContainer');
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  // Dummy data (replace with real logic from your system)
-  const isFounder = true;
-
-  function getDefaultAvatar(username) {
-    return `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=00adb5&color=fff&size=130`;
-  }
-
-  function updateAvatar() {
-    const username = usernameDisplay.textContent.trim();
-    const uploaded = localStorage.getItem('customPfp');
-    avatar.src = uploaded || getDefaultAvatar(username);
-  }
-
-  function updateBadge() {
-    if (isFounder) {
-      badgeContainer.innerHTML = `<div class="badge-founder">👑 Founder</div>`;
-    } else {
-      badgeContainer.innerHTML = '';
-    }
-  }
-
-  function saveUsername() {
-    const newName = usernameInput.value.trim() || 'username123';
-    usernameDisplay.textContent = newName;
-    usernameDisplay.style.display = 'inline-block';
-    usernameInput.style.display = 'none';
-    updateAvatar();
-  }
-
-  // Inline username edit
-  usernameDisplay.addEventListener('click', () => {
-    usernameInput.value = usernameDisplay.textContent;
-    usernameDisplay.style.display = 'none';
-    usernameInput.style.display = 'inline-block';
-    usernameInput.focus();
-  });
-
-  usernameInput.addEventListener('blur', saveUsername);
-  usernameInput.addEventListener('keydown', e => {
-    if (e.key === 'Enter') usernameInput.blur();
-  });
-
-  // Avatar upload
-  avatar.addEventListener('click', () => {
-    avatarUpload.click();
-  });
-
-  avatarUpload.addEventListener('change', event => {
-    const file = event.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = e => {
-      localStorage.setItem('customPfp', e.target.result);
-      updateAvatar();
+    // Firebase Config
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "sputnik-cosmotics.firebaseapp.com",
+      projectId: "sputnik-cosmotics",
+      storageBucket: "sputnik-cosmotics.appspot.com",
+      messagingSenderId: "197760107068",
+      appId: "YOUR_APP_ID"
     };
-    reader.readAsDataURL(file);
-  });
 
-  // Google Sign-In simulation
-  function signIn() {
-    alert('Google Sign-In triggered (mock)');
-  }
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const provider = new GoogleAuthProvider();
 
-  function logOut() {
-    localStorage.removeItem('customPfp');
-    alert('Logged out (mock)');
-    location.reload();
-  }
+    // Define founder UIDs
+    const founderUids = ["CImstFVO02deRULe8PSCiyO920Y2"]; // ← Replace with your founder UID
 
-  // Init
-  updateAvatar();
-  updateBadge();
-</script>
+    // Sign in automatically if not signed in
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        signInWithPopup(auth, provider).catch(alert);
+        return;
+      }
+
+      const userRef = doc(db, "users", user.uid);
+      const userSnap = await getDoc(userRef);
+
+      if (userSnap.exists()) {
+        const data = userSnap.data();
+        document.getElementById("display-username").innerText = data.username || "No username";
+        document.getElementById("display-bio").innerText = data.bio || "No bio";
+        document.getElementById("display-role").innerText = data.role === "founder" ? "🌟 Founder" : "👥 Member";
+      } else {
+        // New user: create profile
+        await setDoc(userRef, {
+          username: user.displayName || "Anonymous",
+          bio: "No bio yet.",
+          role: founderUids.includes(user.uid) ? "founder" : "member"
+        });
+        location.reload();
+      }
+    });
+
+    // Save Profile
+    window.saveProfile = async function () {
+      const user = auth.currentUser;
+      if (!user) return alert("Not signed in.");
+
+      const username = document.getElementById("usernameInput").value;
+      const bio = document.getElementById("bioInput").value;
+
+      const userRef = doc(db, "users", user.uid);
+      await setDoc(userRef, {
+        username,
+        bio,
+        role: founderUids.includes(user.uid) ? "founder" : "member"
+      });
+
+      alert("Profile updated!");
+      location.reload();
+    };
+
+    // Sign out
+    window.signOut = function () {
+      signOut(auth).then(() => location.reload());
+    };
+  </script>
 
 </body>
 </html>
