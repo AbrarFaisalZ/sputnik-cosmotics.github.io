@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sputnik Cosmotics - Profile</title>
+  <title>Your Profile | Sputnik Cosmotics</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
       margin: 0;
@@ -11,138 +11,117 @@
       background-color: #0d0f1b;
       color: white;
     }
-
     .sidebar {
-      height: 100vh;
-      width: 240px;
+      height: 100%;
+      width: 220px;
       position: fixed;
       top: 0;
       left: 0;
       background-color: #111627;
-      padding-top: 2rem;
+      padding-top: 20px;
       border-right: 1px solid #1f2a40;
     }
-
     .sidebar a {
+      padding: 12px 20px;
       display: block;
-      padding: 1rem 2rem;
       color: #00ffc8;
       text-decoration: none;
       transition: 0.2s;
     }
-
     .sidebar a:hover {
-      background-color: #1a1f34;
+      background-color: #1f2a40;
     }
-
-    .main-content {
+    .main {
       margin-left: 240px;
       padding: 2rem;
     }
-
-    .button {
-      padding: 0.6rem 1.2rem;
-      margin-top: 1rem;
+    .profile-card {
+      background-color: #1a1f34;
+      padding: 2rem;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(0,255,255,0.1);
+    }
+    .profile-pic {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      margin-bottom: 1rem;
+      border: 2px solid #00ffc8;
+    }
+    .login-btn {
+      padding: 10px 20px;
       background-color: #00ffc8;
       color: #0d0f1b;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
       font-weight: bold;
       cursor: pointer;
     }
-
-    .button:hover {
+    .login-btn:hover {
       background-color: #00e6b3;
     }
-
-    #user-info img {
-      width: 100px;
-      border-radius: 50%;
-      margin-top: 1rem;
-    }
   </style>
-</head>
-<body>
-
-  <div class="sidebar">
-    <a href="index.html">Home</a>
-    <a href="about.html">About Us</a>
-    <a href="blog.html">Blog</a>
-    <a href="gallery.html">Gallery</a>
-    <a href="profile.html">Profile</a>
-  </div>
-
-  <div class="main-content">
-    <h1>My Profile</h1>
-    <button class="button" onclick="signInWithGoogle()">Sign in with Google</button>
-    <button class="button" onclick="signOut()">Sign out</button>
-
-    <div id="user-info"></div>
-  </div>
 
   <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js"></script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-  <!-- Initialize Firebase -->
-  <script>
     const firebaseConfig = {
       apiKey: "AIzaSyCiI1zHK3pJgyOO_6R8_VsanoXGySAGk9k",
       authDomain: "sputnik-cosmotics.firebaseapp.com",
       projectId: "sputnik-cosmotics",
-      storageBucket: "sputnik-cosmotics.firebasestorage.app",
+      storageBucket: "sputnik-cosmotics.appspot.com",
       messagingSenderId: "197760107068",
       appId: "1:197760107068:web:27f8aaff43dd072645f939"
     };
 
-    const app = firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
 
-    const provider = new firebase.auth.GoogleAuthProvider();
-
-    function signInWithGoogle() {
-      auth.signInWithPopup(provider)
-        .then((result) => {
-          const user = result.user;
-          saveUserToFirestore(user);
-          showUserInfo(user);
-        })
-        .catch((error) => {
-          console.error("Sign-in error:", error);
-        });
-    }
-
-    function signOut() {
-      auth.signOut().then(() => {
-        document.getElementById("user-info").innerHTML = "";
-        alert("Signed out");
+    window.login = () => {
+      signInWithPopup(auth, provider).catch((error) => {
+        alert("Login failed: " + error.message);
       });
-    }
+    };
 
-    function saveUserToFirestore(user) {
-      const userRef = db.collection("users").doc(user.uid);
-      userRef.set({
-        name: user.displayName,
-        email: user.email,
-        photo: user.photoURL,
-        lastLogin: firebase.firestore.FieldValue.serverTimestamp()
-      }, { merge: true });
-    }
-
-    function showUserInfo(user) {
-      document.getElementById("user-info").innerHTML = `
-        <p>Signed in as: <strong>${user.displayName}</strong></p>
-        <img src="${user.photoURL}" alt="User Photo" />
-      `;
-    }
-
-    auth.onAuthStateChanged((user) => {
+    onAuthStateChanged(auth, (user) => {
+      const profileSection = document.getElementById("profile");
       if (user) {
-        showUserInfo(user);
+        profileSection.innerHTML = `
+          <div class="profile-card">
+            <img src="${user.photoURL}" class="profile-pic" alt="User photo" />
+            <h2>${user.displayName}</h2>
+            <p>${user.email}</p>
+          </div>
+        `;
+      } else {
+        profileSection.innerHTML = `
+          <div style="text-align:center;">
+            <p>Please sign in to view your profile.</p>
+            <button class="login-btn" onclick="login()">Sign in with Google</button>
+          </div>
+        `;
       }
     });
   </script>
+</head>
+
+<body>
+  <div class="sidebar">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="blog.html">Blog</a>
+    <a href="profile.html">Profile</a>
+  </div>
+
+  <div class="main">
+    <h1>My Profile</h1>
+    <div id="profile">
+      <!-- Dynamic user profile will appear here -->
+    </div>
+  </div>
 </body>
 </html>
