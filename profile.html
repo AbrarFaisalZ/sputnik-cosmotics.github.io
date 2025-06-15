@@ -1,146 +1,146 @@
 <!DOCTYPE html>
 <html lang="en">
-<div style="position: fixed; top: 0; left: 0; width: 220px; height: 100%; background-color: #111627; padding: 2rem 1rem; box-shadow: 2px 0 10px rgba(0,255,255,0.1);">
-  <h2 style="color: #00ffc8; text-align: center; font-size: 1.5rem;">Sputnik</h2>
-  <nav style="margin-top: 2rem; display: flex; flex-direction: column; gap: 1rem;">
-    <a href="index.html" style="color: #00ffc8; text-decoration: none; font-weight: bold;">Home</a>
-    <a href="blog.html" style="color: #00ffc8; text-decoration: none; font-weight: bold;">Blog</a>
-    <a href="journal.html" style="color: #00ffc8; text-decoration: none; font-weight: bold;">Journal</a>
-    <a href="about.html" style="color: #00ffc8; text-decoration: none; font-weight: bold;">About Us</a>
-    <a href="profile.html" style="color: #00ffc8; text-decoration: none; font-weight: bold;">Profile</a>
-  </nav>
-</div>
-  <div style="margin-left: 240px; padding: 2rem;">
-  <!-- Your profile content goes here -->
-  </div>
-  <head>
+<head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>User Profile | Sputnik Cosmotics</title>
+  <title>Sputnik Cosmotics - Profile</title>
   <style>
     body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
       background-color: #0d0f1b;
       color: white;
-      font-family: 'Segoe UI', sans-serif;
-      margin: 0;
-      padding: 0;
-      text-align: center;
     }
-    header {
+
+    .sidebar {
+      height: 100vh;
+      width: 240px;
+      position: fixed;
+      top: 0;
+      left: 0;
       background-color: #111627;
-      padding: 1rem;
-      border-bottom: 1px solid #1f2a40;
+      padding-top: 2rem;
+      border-right: 1px solid #1f2a40;
     }
-    h1 {
+
+    .sidebar a {
+      display: block;
+      padding: 1rem 2rem;
       color: #00ffc8;
+      text-decoration: none;
+      transition: 0.2s;
     }
-    .container {
-      margin: 2rem auto;
-      max-width: 500px;
-      padding: 1rem;
+
+    .sidebar a:hover {
+      background-color: #1a1f34;
     }
-    input {
-      width: 90%;
-      padding: 0.7rem;
-      margin: 0.5rem 0;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
+
+    .main-content {
+      margin-left: 240px;
+      padding: 2rem;
     }
-    button {
-      padding: 0.7rem 1.5rem;
+
+    .button {
+      padding: 0.6rem 1.2rem;
+      margin-top: 1rem;
       background-color: #00ffc8;
       color: #0d0f1b;
-      font-weight: bold;
       border: none;
-      border-radius: 8px;
+      border-radius: 6px;
+      font-weight: bold;
       cursor: pointer;
-      margin: 0.5rem;
     }
-    .badge {
-      background: #1a1f34;
-      padding: 1rem;
-      margin-top: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,255,255,0.2);
+
+    .button:hover {
+      background-color: #00e6b3;
+    }
+
+    #user-info img {
+      width: 100px;
+      border-radius: 50%;
+      margin-top: 1rem;
     }
   </style>
 </head>
-<!-- Firebase App (the core Firebase SDK) -->
-<script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js"></script>
-<!-- Firebase Firestore -->
-<script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js"></script>
-  <body>
+<body>
 
-  <header>
-    <h1>User Profile</h1>
-  </header>
+  <div class="sidebar">
+    <a href="index.html">Home</a>
+    <a href="about.html">About Us</a>
+    <a href="blog.html">Blog</a>
+    <a href="gallery.html">Gallery</a>
+    <a href="profile.html">Profile</a>
+  </div>
 
-  <div class="container">
-    <div id="auth-section">
-      <input type="email" id="email" placeholder="Email" />
-      <input type="password" id="password" placeholder="Password" />
-      <br />
-      <button onclick="signUp()">Sign Up</button>
-      <button onclick="logIn()">Log In</button>
-    </div>
+  <div class="main-content">
+    <h1>My Profile</h1>
+    <button class="button" onclick="signInWithGoogle()">Sign in with Google</button>
+    <button class="button" onclick="signOut()">Sign out</button>
 
-    <div id="user-section" style="display:none;">
-      <h2>Welcome, <span id="user-email"></span></h2>
-      <div class="badge">
-        🎖️ <strong>Astronaut Badge</strong><br />
-        For logging into Sputnik Cosmotics!
-      </div>
-      <br />
-      <button onclick="logOut()">Log Out</button>
-    </div>
+    <div id="user-info"></div>
   </div>
 
   <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore.js"></script>
 
+  <!-- Initialize Firebase -->
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyCiI1zHK3pJgyOO_6R8_VsanoXGySAGk9k",
       authDomain: "sputnik-cosmotics.firebaseapp.com",
       projectId: "sputnik-cosmotics",
-      storageBucket: "sputnik-cosmotics.appspot.com",
+      storageBucket: "sputnik-cosmotics.firebasestorage.app",
       messagingSenderId: "197760107068",
       appId: "1:197760107068:web:27f8aaff43dd072645f939"
     };
 
-    firebase.initializeApp(firebaseConfig);
+    const app = firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
+    const db = firebase.firestore();
 
-    function signUp() {
-      const email = document.getElementById('email').value;
-      const pass = document.getElementById('password').value;
-      auth.createUserWithEmailAndPassword(email, pass)
-        .then(user => alert("✅ Signup Successful!"))
-        .catch(err => alert("❌ " + err.message));
+    const provider = new firebase.auth.GoogleAuthProvider();
+
+    function signInWithGoogle() {
+      auth.signInWithPopup(provider)
+        .then((result) => {
+          const user = result.user;
+          saveUserToFirestore(user);
+          showUserInfo(user);
+        })
+        .catch((error) => {
+          console.error("Sign-in error:", error);
+        });
     }
 
-    function logIn() {
-      const email = document.getElementById('email').value;
-      const pass = document.getElementById('password').value;
-      auth.signInWithEmailAndPassword(email, pass)
-        .then(() => {})
-        .catch(err => alert("❌ " + err.message));
+    function signOut() {
+      auth.signOut().then(() => {
+        document.getElementById("user-info").innerHTML = "";
+        alert("Signed out");
+      });
     }
 
-    function logOut() {
-      auth.signOut();
+    function saveUserToFirestore(user) {
+      const userRef = db.collection("users").doc(user.uid);
+      userRef.set({
+        name: user.displayName,
+        email: user.email,
+        photo: user.photoURL,
+        lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
     }
 
-    auth.onAuthStateChanged(user => {
+    function showUserInfo(user) {
+      document.getElementById("user-info").innerHTML = `
+        <p>Signed in as: <strong>${user.displayName}</strong></p>
+        <img src="${user.photoURL}" alt="User Photo" />
+      `;
+    }
+
+    auth.onAuthStateChanged((user) => {
       if (user) {
-        document.getElementById('auth-section').style.display = 'none';
-        document.getElementById('user-section').style.display = 'block';
-        document.getElementById('user-email').innerText = user.email;
-      } else {
-        document.getElementById('auth-section').style.display = 'block';
-        document.getElementById('user-section').style.display = 'none';
+        showUserInfo(user);
       }
     });
   </script>
