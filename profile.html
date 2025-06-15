@@ -5,7 +5,7 @@
   <title>Sputnik Profile</title>
   <style>
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: Arial, sans-serif;
       margin: 0;
       background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
       color: white;
@@ -23,7 +23,6 @@
       color: white;
       padding: 1rem 2rem;
       text-decoration: none;
-      transition: background 0.3s;
     }
     .sidebar a:hover {
       background-color: #333;
@@ -31,44 +30,39 @@
     .main {
       margin-left: 240px;
       padding: 2rem;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
     }
     .profile-box {
       background: rgba(255, 255, 255, 0.1);
-      padding: 2rem;
-      border-radius: 12px;
+      padding: 1.5rem;
+      border-radius: 10px;
       max-width: 600px;
-      width: 100%;
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(8px);
+      box-shadow: 0 0 20px rgba(255,255,255,0.2);
     }
     .profile-pic {
-      width: 120px;
-      height: 120px;
+      width: 100px;
+      height: 100px;
       border-radius: 50%;
       object-fit: cover;
-      border: 3px solid #4CAF50;
       margin-bottom: 1rem;
+      border: 2px solid #4CAF50;
     }
-    textarea, input[type="text"] {
+    textarea {
       width: 100%;
-      padding: 0.5rem;
-      margin-top: 0.5rem;
+      height: 100px;
+      margin-top: 10px;
+      padding: 10px;
       border-radius: 8px;
       border: none;
+      resize: none;
     }
     button {
       margin-top: 1rem;
-      padding: 0.6rem 1.2rem;
+      padding: 0.5rem 1rem;
       border: none;
       background-color: #4CAF50;
       color: white;
-      border-radius: 8px;
+      border-radius: 5px;
       cursor: pointer;
-      font-weight: bold;
     }
     button:hover {
       background-color: #3e8e41;
@@ -82,17 +76,16 @@
     <a href="profile.html">Profile</a>
   </div>  <div class="main">
     <div class="profile-box">
-      <div style="text-align: center;">
-        <img id="pfp" class="profile-pic" src="https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png" alt="Profile Picture"/>
-        <h2 id="username">Guest</h2>
-        <p><strong>Role:</strong> <span id="role">N/A</span></p>
-      </div>
-      <label for="bio"><strong>Bio:</strong></label>
-      <textarea id="bio" placeholder="Tell us about yourself..."></textarea>
-      <button id="save-btn">Save Profile</button>
+      <img id="pfp" class="profile-pic" src="https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png" alt="Profile Picture"/>
+      <h2>👤 Profile</h2>
+      <p><strong>Username:</strong> <span id="username">Guest</span></p>
+      <p><strong>Role:</strong> <span id="role">N/A</span></p>
+      <label for="bio"><strong>Bio:</strong></label><br/>
+      <textarea id="bio" placeholder="Tell us about yourself..."></textarea><br/>
+      <button id="save-btn">Save</button>
       <button id="sign-btn">Sign In with Google</button>
     </div>
-  </div>  <script type="module">
+  </div>  <!-- Firebase Scripts -->  <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
     import {
       getAuth,
@@ -132,12 +125,12 @@
 
     onAuthStateChanged(auth, async (user) => {
       if (user) {
+        usernameEl.textContent = user.displayName;
+        pfp.src = user.photoURL || "https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png";
+        signBtn.textContent = "Sign Out";
+
         const userRef = doc(db, "users", user.uid);
         const docSnap = await getDoc(userRef);
-
-        usernameEl.textContent = user.displayName;
-        pfp.src = user.photoURL || pfp.src;
-        signBtn.textContent = "Sign Out";
 
         if (docSnap.exists()) {
           const data = docSnap.data();
@@ -181,21 +174,17 @@
         return;
       }
 
-      const bio = bioEl.value.trim();
+      const bio = bioEl.value;
       const role = user.uid === founderUID ? "Founder" : "Member";
 
-      try {
-        await setDoc(doc(db, "users", user.uid), {
-          name: user.displayName,
-          bio,
-          role
-        });
+      await setDoc(doc(db, "users", user.uid), {
+        name: user.displayName,
+        bio,
+        role
+      });
 
-        // Redirect to user view page
-        window.location.href = `user.html?uid=${user.uid}`;
-      } catch (err) {
-        alert("Error saving profile: " + err.message);
-      }
+      // Redirect to user profile page
+      window.location.href = `user.html?uid=${user.uid}`;
     });
   </script></body>
 </html>
