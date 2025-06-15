@@ -104,9 +104,17 @@
             <button class="login-btn" onclick="login()">Sign in with Google</button>
           </div>
         `;
+        const userRef = doc(db, "users", user.uid);
+setDoc(userRef, {
+  username: usernameInput.value,
+  bio: bioInput.value,
+  role: founderUids.includes(user.uid) ? "founder" : "member"
+});
+        const founderUids = ["CImstFVO02deRULe8PSCiyO920Y2"]; // add your UIDs manually
       }
     });
   </script>
+
 </head>
 
 <body>
