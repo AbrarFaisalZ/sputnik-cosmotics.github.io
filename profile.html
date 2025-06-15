@@ -152,7 +152,29 @@
     <h3 style="margin-top: 2rem;">🏅 Badges</h3>
     <div id="badges" class="badge-grid"></div>
   </div>
+<!-- Firebase CDN SDKs (add in <head> or before your scripts) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
 
+<script>
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyCiI1zHK3pJgyOO_6R8_VsanoXGySAGk9k",
+    authDomain: "sputnik-cosmotics.firebaseapp.com",
+    projectId: "sputnik-cosmotics",
+    storageBucket: "sputnik-cosmotics.appspot.com",
+    messagingSenderId: "197760107068",
+    appId: "1:197760107068:web:27f8aaff43dd072645f939"
+  };
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+
+  // Optional: Firestore and Auth references
+  const db = firebase.firestore();
+  const auth = firebase.auth();
+    </script>
   <script>
     const defaultPic = "https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png";
 
