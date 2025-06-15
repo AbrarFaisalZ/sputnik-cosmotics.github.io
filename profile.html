@@ -1,135 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Your Profile | Sputnik Cosmotics</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #0d0f1b;
-      color: white;
-    }
-    .sidebar {
-      height: 100%;
-      width: 220px;
-      position: fixed;
-      top: 0;
-      left: 0;
-      background-color: #111627;
-      padding-top: 20px;
-      border-right: 1px solid #1f2a40;
-    }
-    .sidebar a {
-      padding: 12px 20px;
-      display: block;
-      color: #00ffc8;
-      text-decoration: none;
-      transition: 0.2s;
-    }
-    .sidebar a:hover {
-      background-color: #1f2a40;
-    }
-    .main {
-      margin-left: 240px;
-      padding: 2rem;
-    }
-    .profile-card {
-      background-color: #1a1f34;
-      padding: 2rem;
-      border-radius: 10px;
-      text-align: center;
-      box-shadow: 0 0 10px rgba(0,255,255,0.1);
-    }
-    .profile-pic {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      margin-bottom: 1rem;
-      border: 2px solid #00ffc8;
-    }
-    .login-btn {
-      padding: 10px 20px;
-      background-color: #00ffc8;
-      color: #0d0f1b;
-      border: none;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .login-btn:hover {
-      background-color: #00e6b3;
-    }
-  </style>
-
-  <!-- Firebase SDKs -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyCiI1zHK3pJgyOO_6R8_VsanoXGySAGk9k",
-      authDomain: "sputnik-cosmotics.firebaseapp.com",
-      projectId: "sputnik-cosmotics",
-      storageBucket: "sputnik-cosmotics.appspot.com",
-      messagingSenderId: "197760107068",
-      appId: "1:197760107068:web:27f8aaff43dd072645f939"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const provider = new GoogleAuthProvider();
-
-    window.login = () => {
-      signInWithPopup(auth, provider).catch((error) => {
-        alert("Login failed: " + error.message);
-      });
-    };
-
-    onAuthStateChanged(auth, (user) => {
-      const profileSection = document.getElementById("profile");
-      if (user) {
-        profileSection.innerHTML = `
-          <div class="profile-card">
-            <img src="${user.photoURL}" class="profile-pic" alt="User photo" />
-            <h2>${user.displayName}</h2>
-            <p>${user.email}</p>
-          </div>
-        `;
-      } else {
-        profileSection.innerHTML = `
-          <div style="text-align:center;">
-            <p>Please sign in to view your profile.</p>
-            <button class="login-btn" onclick="login()">Sign in with Google</button>
-          </div>
-        `;
-        const userRef = doc(db, "users", user.uid);
-setDoc(userRef, {
-  username: usernameInput.value,
-  bio: bioInput.value,
-  role: founderUids.includes(user.uid) ? "founder" : "member"
-});
-        const founderUids = ["CImstFVO02deRULe8PSCiyO920Y2"]; // add your UIDs manually
-      }
-    });
-  </script>
-
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>User Profile</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f9f9f9;
+    margin: 0;
+    padding: 0;
+  }
+  .profile-container {
+    max-width: 600px;
+    margin: 2rem auto;
+    background: #fff;
+    padding: 1.5rem 2rem;
+    border-radius: 8px;
+    box-shadow: 0 0 12px rgba(0,0,0,0.1);
+  }
+  .avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #4a90e2;
+  }
+  .username {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin: 0.5rem 0;
+    display: flex;
+    align-items: center;
+  }
+  .role-founder {
+    background: #f39c12;
+    color: white;
+    font-size: 0.9rem;
+    padding: 0.1rem 0.5rem;
+    border-radius: 4px;
+    margin-left: 10px;
+  }
+  .bio {
+    font-size: 1.1rem;
+    color: #333;
+    margin-bottom: 1.5rem;
+  }
+  .comments-section {
+    border-top: 1px solid #ddd;
+    padding-top: 1rem;
+  }
+  .comment {
+    background: #eaf0fb;
+    padding: 0.8rem 1rem;
+    margin-bottom: 1rem;
+    border-radius: 6px;
+  }
+  .comment-user {
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+  }
+  /* Simple scroll container for comments */
+  .comments-list {
+    max-height: 200px;
+    overflow-y: auto;
+  }
+</style>
 </head>
-
 <body>
-  <div class="sidebar">
-    <a href="index.html">Home</a>
-    <a href="about.html">About</a>
-    <a href="blog.html">Blog</a>
-    <a href="profile.html">Profile</a>
-  </div>
 
-  <div class="main">
-    <h1>My Profile</h1>
-    <div id="profile">
-      <!-- Dynamic user profile will appear here -->
+<div class="profile-container">
+
+  <!-- Profile Info -->
+  <img
+    src="https://i.pravatar.cc/100?u=username123"
+    alt="User Avatar"
+    class="avatar"
+  />
+  
+  <h1 class="username">
+    username123
+    <span class="role-founder" title="Founder">Founder</span>
+  </h1>
+  
+  <p class="bio">
+    Passionate about astronomy and community building. Love sharing knowledge and exploring the universe.
+  </p>
+  
+  <!-- Comments Section -->
+  <div class="comments-section">
+    <h2>Comments</h2>
+    <div class="comments-list" id="comments-list">
+      <!-- Comments will be injected here -->
     </div>
   </div>
+</div>
+
+<script>
+  // Example comments data (simulate fetched or pre-loaded)
+  const comments = [
+    { user: "astroFan42", text: "Great profile! Really inspired me." },
+    { user: "starGazer", text: "Love your posts about meteor showers!" },
+    { user: "spaceNerd", text: "Can't wait for your next blog entry." }
+  ];
+
+  // Insert comments into DOM
+  const commentsList = document.getElementById('comments-list');
+
+  comments.forEach(comment => {
+    const commentEl = document.createElement('div');
+    commentEl.classList.add('comment');
+    
+    commentEl.innerHTML = `
+      <div class="comment-user">${comment.user}</div>
+      <div class="comment-text">${comment.text}</div>
+    `;
+
+    commentsList.appendChild(commentEl);
+  });
+</script>
+
 </body>
 </html>
