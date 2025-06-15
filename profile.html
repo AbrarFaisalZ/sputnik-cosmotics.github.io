@@ -82,4 +82,122 @@
     <a href="profile.html">Profile</a>
   </div>  <div class="main">
     <div class="profile-box">
-      <div style
+      <div style="text-align: center;">
+        <img id="pfp" class="profile-pic" src="https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png" alt="Profile Picture"/>
+        <h2 id="username">Guest</h2>
+        <p><strong>Role:</strong> <span id="role">N/A</span></p>
+      </div>
+      <label for="bio"><strong>Bio:</strong></label>
+      <textarea id="bio" placeholder="Tell us about yourself..."></textarea>
+      <button id="save-btn">Save Profile</button>
+      <button id="sign-btn">Sign In with Google</button>
+    </div>
+  </div>  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import {
+      getAuth,
+      GoogleAuthProvider,
+      signInWithPopup,
+      signOut,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      setDoc,
+      getDoc
+    } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCiI1zHK3pJgyOO_6R8_VsanoXGySAGk9k",
+      authDomain: "sputnik-cosmotics.firebaseapp.com",
+      projectId: "sputnik-cosmotics",
+      storageBucket: "sputnik-cosmotics.appspot.com",
+      messagingSenderId: "197760107068",
+      appId: "1:197760107068:web:27f8aaff43dd072645f939"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const founderUID = "CImstFVO02deRULe8PSCiyO920Y2";
+
+    const usernameEl = document.getElementById("username");
+    const roleEl = document.getElementById("role");
+    const bioEl = document.getElementById("bio");
+    const signBtn = document.getElementById("sign-btn");
+    const saveBtn = document.getElementById("save-btn");
+    const pfp = document.getElementById("pfp");
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const userRef = doc(db, "users", user.uid);
+        const docSnap = await getDoc(userRef);
+
+        usernameEl.textContent = user.displayName;
+        pfp.src = user.photoURL || pfp.src;
+        signBtn.textContent = "Sign Out";
+
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          bioEl.value = data.bio || "";
+          roleEl.textContent = data.role || (user.uid === founderUID ? "Founder" : "Member");
+        } else {
+          const role = user.uid === founderUID ? "Founder" : "Member";
+          await setDoc(userRef, {
+            name: user.displayName,
+            bio: "",
+            role
+          });
+          roleEl.textContent = role;
+        }
+      } else {
+        usernameEl.textContent = "Guest";
+        roleEl.textContent = "N/A";
+        signBtn.textContent = "Sign In with Google";
+        pfp.src = "https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png";
+        bioEl.value = "";
+      }
+    });
+
+    signBtn.addEventListener("click", async () => {
+      if (auth.currentUser) {
+        await signOut(auth);
+      } else {
+        try {
+          const provider = new GoogleAuthProvider();
+          await signInWithPopup(auth, provider);
+        } catch (error) {
+          alert("Popup blocked! Please allow popups in your browser.");
+        }
+      }
+    });
+
+    saveBtn.addEventListener("click", async () => {
+      const user = auth.currentUser;
+      if (!user) {
+        alert("Sign in first.");
+        return;
+      }
+
+      const bio = bioEl.value.trim();
+      const role = user.uid === founderUID ? "Founder" : "Member";
+
+      try {
+        await setDoc(doc(db, "users", user.uid), {
+          name: user.displayName,
+          bio,
+          role
+        });
+
+        // Refresh UI
+        usernameEl.textContent = user.displayName;
+        roleEl.textContent = role;
+        alert("Profile saved!");
+      } catch (err) {
+        alert("Error saving profile: " + err.message);
+      }
+    });
+  </script></body>
+</html>
